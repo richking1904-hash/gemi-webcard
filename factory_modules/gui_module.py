@@ -10,8 +10,9 @@ def browse_files_manual():
     global dropped_files
     file_paths = filedialog.askopenfilenames(
         title="포트폴리오 이미지 또는 자료 선택 (다중 선택 가능)",
-        filetypes=[("지원하는 모든 파일", "*.png *.jpg *.jpeg *.gif *.xlsx *.pdf"), 
-                   ("이미지 파일", "*.png *.jpg *.jpeg *.gif")]
+        filetypes=[("지원하는 모든 파일", "*.png *.jpg *.jpeg *.gif *.xlsx *.pdf *.txt"), 
+                   ("이미지 파일", "*.png *.jpg *.jpeg *.gif"),
+                   ("텍스트 가이드라인", "*.txt")]
     )
     if file_paths:
         for path in file_paths:
@@ -20,14 +21,19 @@ def browse_files_manual():
         drop_zone_label.configure(text=f"📊 총 {len(dropped_files)}개의 파일이 안전하게 로드되었습니다.", text_color="#64B5F6")
         file_names = [os.path.basename(f) for f in dropped_files]
         main_image_combobox.configure(values=file_names)
-        if file_names:
+        
+        img_nodes = [f for f in file_names if not f.endswith('.txt')]
+        if img_nodes:
+            main_image_combobox.set(img_nodes[-1])
+        elif file_names:
             main_image_combobox.set(file_names[-1])
+            
         status_label.configure(text=f"➕ {len(file_paths)}개의 파일이 정상적으로 추가되었습니다.", text_color="#A5D6A7")
 
 def reset_file_list():
     global dropped_files
     dropped_files.clear()
-    drop_zone_label.configure(text="아래 버튼을 눌러 파일들을 추가하세요\n(png, jpg, xlsx, pdf 다중 선택 지원)", text_color="#888888")
+    drop_zone_label.configure(text="아래 버튼을 눌러 파일들을 추가하세요\n(png, jpg, txt 다중 선택 지원)", text_color="#888888")
     main_image_combobox.configure(values=["먼저 파일을 추가해 주세요"])
     main_image_combobox.set("먼저 파일을 추가해 주세요")
     status_label.configure(text="🧹 로드된 파일 목록이 초기화되었습니다.", text_color="#FFB74D")
@@ -48,7 +54,7 @@ def on_submit_click():
         try:
             response = requests.head(check_url, timeout=3)
             if response.status_code < 400:
-                status_label.configure(text=f"❌ 중복 주소! [{clean_url}]은 이미 다른 사람이 쓰고 있습니다. 이름을 변경해 주세요.", text_color="#FF5252")
+                status_label.configure(text=f"❌ 중복 주소! [{clean_url}]은 이미 다른 사람이 쓰고 있습니다.", text_color="#FF5252")
                 return
         except Exception:
             pass
@@ -60,7 +66,6 @@ def on_submit_click():
             main_image_full_path = path
             break
 
-    # 💡 [가변 SNS 데이터 마스터 매칭 수집 완료]
     final_payload = {
         "user_info": {
             "name": name_entry.get().strip(),
@@ -93,7 +98,7 @@ def on_submit_click():
         },
         "main_image_path": main_image_full_path,
         "ai_custom_requests": {
-            "special_notes": ai_requests_textbox.get("1.0", "end").strip()
+            "special_notes": "원터치 자동화 스토리지 가이드라인 스트리밍 버전"
         }
     }
     app.quit()
@@ -106,9 +111,9 @@ def export_gui_data():
 
 app = ctk.CTk()
 app.title("GeMi WebCard Director v1.0")
-app.geometry("620x860")
+app.geometry("620x800")
 ctk.set_appearance_mode("dark")
-scroll_frame = ctk.CTkScrollableFrame(app, width=590, height=820, fg_color="transparent")
+scroll_frame = ctk.CTkScrollableFrame(app, width=590, height=760, fg_color="transparent")
 scroll_frame.pack(pady=10, padx=10, fill="both", expand=True)
 ctk.CTkLabel(scroll_frame, text="GeMi WebCard Director v1.0", font=("Helvetica", 22)).pack(pady=10)
 
@@ -121,14 +126,12 @@ introduction_entry = ctk.CTkEntry(scroll_frame, width=500, fg_color="#2A2A2A"); 
 ctk.CTkLabel(scroll_frame, text="🌐 원하는 웹사이트 주소 이름 (선택):", text_color="#64B5F6").pack(anchor="w", padx=25)
 url_name_entry = ctk.CTkEntry(scroll_frame, width=500, fg_color="#1E293B", border_color="#3B82F6"); url_name_entry.pack(pady=5)
 
-# 기본 인적사항 프레임
 contact_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); contact_frame.pack(fill="x", padx=25, pady=5)
 ctk.CTkLabel(contact_frame, text="📞 휴대폰 번호:").grid(row=0, column=0, sticky="w")
 ctk.CTkLabel(contact_frame, text="✉️ 이메일 주소:").grid(row=0, column=1, sticky="w", padx=20)
 phone_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); phone_entry.grid(row=1, column=0)
 email_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); email_entry.grid(row=1, column=1, padx=20)
 
-# 👑 [가변 SNS 연동 레이아웃 개조 영역]
 sns_options = ["Instagram", "Naver Blog", "KakaoTalk", "Telegram", "YouTube"]
 ctk.CTkLabel(scroll_frame, text="📱 SNS 채널 1 선택 및 주소(아이디):").pack(anchor="w", padx=25, pady=(5,0))
 sns1_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); sns1_frame.pack(fill="x", padx=25, pady=2)
@@ -152,12 +155,14 @@ faq_q3_entry = ctk.CTkEntry(faq_frame, width=240, placeholder_text="질문 3", f
 faq_a3_entry = ctk.CTkEntry(faq_frame, width=240, placeholder_text="답변 3", fg_color="#2A2A2A"); faq_a3_entry.grid(row=2, column=1, padx=20, pady=2)
 
 drop_zone_frame = ctk.CTkFrame(scroll_frame, width=500, height=65, fg_color="#1E1E1E", border_width=2); drop_zone_frame.pack_propagate(False); drop_zone_frame.pack(pady=10)
-drop_zone_label = ctk.CTkLabel(drop_zone_frame, text="아래 버튼을 눌러 파일들을 추가하세요", text_color="#888888"); drop_zone_label.pack(expand=True)
+drop_zone_label = ctk.CTkLabel(drop_zone_frame, text="아래 버튼을 눌러 파일들을 추가하세요\n(이미지들과 guideline.txt 가이드라인 동시 선택 지원)", text_color="#A5D6A7")
+drop_zone_label.pack(expand=True)
+
 btn_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); btn_frame.pack(fill="x", padx=25)
-select_btn = ctk.CTkButton(btn_frame, text="📁 자료 파일 추가하기", command=browse_files_manual, width=360); select_btn.pack(side="left")
+select_btn = ctk.CTkButton(btn_frame, text="📁 자료 및 가이드라인(.txt) 통합 추가하기", command=browse_files_manual, width=360); select_btn.pack(side="left")
 reset_btn = ctk.CTkButton(btn_frame, text="🧹 비우기", command=reset_file_list, width=130); reset_btn.pack(side="left", padx=10)
 
 main_image_combobox = ctk.CTkComboBox(scroll_frame, values=["먼저 파일을 추가해 주세요"], width=500, fg_color="#2A2A2A"); main_image_combobox.pack(pady=10)
-ai_requests_textbox = ctk.CTkTextbox(scroll_frame, width=500, height=65, fg_color="#2A2A2A"); ai_requests_textbox.pack(pady=5)
+
 status_label = ctk.CTkLabel(scroll_frame, text="공장 가동 준비 완료.", text_color="#888888"); status_label.pack()
 submit_button = ctk.CTkButton(scroll_frame, text="🚀 모바일 반응형 웹명함 빌드 및 자동 배포 시작", command=on_submit_click, width=500, height=45, font=("Arial", 14, "bold")); submit_button.pack(pady=10)
