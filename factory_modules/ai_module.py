@@ -20,6 +20,9 @@ def generate_webcard_code(gui_payload: dict) -> str:
     main_image_url = gui_payload.get("main_image_url", "")
     other_image_urls = gui_payload.get("other_image_urls", [])
     
+    # 👑 스토리지 정산소에서 인계받은 마스터 문서 주소 바인딩
+    guideline_txt_url = gui_payload.get("guideline_txt_url", "")
+    
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")
     introduction = user_info.get("introduction", "")
@@ -50,6 +53,9 @@ def generate_webcard_code(gui_payload: dict) -> str:
     rendered_code = rendered_code.replace("${BRAND_NAME}", brand_name)
     rendered_code = rendered_code.replace("${DIRECTOR_NAME}", director_name)
     rendered_code = rendered_code.replace("${INTRODUCTION}", refined_intro)
+    
+    # 👑 웹명함 자바스크립트가 메모장 주소를 인지할 수 있도록 마킹
+    rendered_code = rendered_code.replace("${GUIDELINE_TXT_URL}", guideline_txt_url)
     
     default_img = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe"
     final_img_url = main_image_url if main_image_url else default_img
@@ -101,14 +107,14 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")
     
-    # 👑 [슈파베이스 창고 주소에서 guideline.txt 실시간 정독하기]
+    # 👑 [가이드라인 파일 실시간 원격 다운로드 및 완전 독학 RAG 허브]
     guideline_url = gui_payload.get("guideline_txt_url", "")
-    fetched_guideline_text = "스튜디오 가이드라인 장부 기록 없음."
+    fetched_guideline_text = "스튜디오 가이드라인 지침서 기록 없음."
     
     if guideline_url:
         try:
             res = requests.get(guideline_url, timeout=4)
-            if res.data and res.status_code == 200: fetched_guideline_text = res.text
+            if res.status_code == 200: fetched_guideline_text = res.text
         except: pass
 
     combined_question = f"Context: Brand:{brand_name}|Name:{director_name}\nQuestion: {question}"
@@ -119,7 +125,7 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
 
     client_info_str = (
         f"브랜드명: {brand_name}, 대표 디렉터명: {director_name}, 소개: {user_info.get('introduction')}\n"
-        f"📜 [슈파베이스 연동 공식 가이드라인 지침 문서 내용]:\n{fetched_guideline_text}\n"
+        f"📜 [공식 문서 가이드라인 지침서 본문]:\n{fetched_guideline_text}\n"
         f"FAQ1: {faq_info.get('faq1_q')}->{faq_info.get('faq1_a')}\n"
         f"FAQ2: {faq_info.get('faq2_q')}->{faq_info.get('faq2_a')}"
     )
@@ -128,7 +134,7 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
         response = openai_client.chat.completions.create(
             model="google/gemini-2.0-flash-001",
             messages=[
-                {"role": "system", "content": f"너는 {brand_name}의 친절하고 영리한 AI 비서야. 아래 제공된 공식 가이드라인 문서를 철저히 마스터하고 고객에게 답변해줘.\n\n--- 가이드라인 지침 문서 ---\n{client_info_str}\n\n🎯 [대화 규칙]\n1. 비즈니스 비용, 견적, 기간 등 전문적인 질문은 가이드라인 문서에 기재된 내용에만 100% 근거하여 프로페셔널하게 확답하세요.\n2. 문서에 없는 사적인 질문이나 장난, 엉뚱한 일상 질문이 들어오면 거부하지 말고, 대표님의 Quiet Luxury 스타일에 걸맞게 은근히 위트있고 세련되게 농담으로 받아치며 유연하게 대응하세요.\n3. 긴 버튼 코드 주입은 전면 금지합니다! 대신 문장 맨 마지막 줄에 다음 콤팩트 안내 문구만 깔끔하게 추가하세요.\n✨ 더 자세한 프로젝트 의뢰는 대화창 우측 상단의 [의뢰하기] 버튼을 눌러 남겨주시면 대표 디렉터 장형규가 신속히 직접 연락드리겠습니다! 👇"} ,
+                {"role": "system", "content": f"너는 {brand_name}의 친절하고 센스 넘치는 AI 비서야. 제공된 가이드라인 문서를 철저히 마스터하고 고객에게 답변해줘.\n\n--- 가이드라인 지침 문서 ---\n{client_info_str}\n\n🎯 [대화 규칙]\n1. 비즈니스 비용, 단가, 작업 기간 등 전문적인 내용은 문서 가이드라인 팩트에만 100% 근거하여 오차 없이 대답하세요.\n2. 문서에 없는 사적인 장난 질문은 거부하지 말고 대표님의 Quiet Luxury 스타일에 걸맞게 은근히 위트있고 세련되게 농담으로 받아치며 어조를 부드럽게 유연성을 발휘하세요.\n3. 말풍선 가로폭이 터져서 지저분해지지 않게 문장 맨 마지막 줄에 다음 콤팩트 4글자 버튼 안내 문구만 깔끔하게 추가하세요.\n<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#2563eb; color:white; font-weight:bold; font-size:11px; padding:8px 12px; border-radius:10px; width:100%; display:block; text-align:center;'>🚀 의뢰하기</button>"} ,
                 {"role": "user", "content": question}
             ]
         )
@@ -136,4 +142,4 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
         try: supabase_client.table(SUPABASE_TABLE).insert({"question": combined_question, "answer": answer}).execute()
         except: pass
         return answer
-    except Exception as e: return "안녕하세요 디렉터 비서입니다. 현재 통신망 점검 중이오니 대화창 우측 상단 [의뢰하기] 버튼을 통해 접수해 주시면 대단히 감사하겠습니다."
+    except Exception as e: return "안녕하세요 디렉터 관제 비서입니다. 현재 일시적인 통신 혼선이 있으니 대화창 우측 상단 [의뢰하기] 버튼을 통해 접수해 주시면 대단히 감사하겠습니다."

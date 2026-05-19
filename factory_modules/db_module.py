@@ -56,6 +56,7 @@ def save_client_data_v2(payload: dict, image_paths: list) -> dict:
                     public_url = f"{SUPABASE_URL}/storage/v1/object/public/{bucket_name}/{file_name}"
                     print(f"✅ [Storage] 파일 업로드 성공: {public_url}")
                     
+                    # 👑 [.txt 가이드라인 메모장 발견 시 특수 주소 칸으로 안착]
                     if path.endswith('.txt'):
                         guideline_txt_url = public_url
                     elif path == selected_main_path:
@@ -74,7 +75,7 @@ def save_client_data_v2(payload: dict, image_paths: list) -> dict:
         faq_info = payload.get("faq_info", {})
         
         config_insert = {
-            "name": user_info.get("name"),
+            "name": user_info.get("name"),  
             "brand_name": user_info.get("brand_name"),
             "introduction": user_info.get("introduction"),
             "phone": contact_info.get("phone"),
@@ -86,10 +87,6 @@ def save_client_data_v2(payload: dict, image_paths: list) -> dict:
             "faq2_q": faq_info.get("faq2_q"), "faq2_a": faq_info.get("faq2_a"),
             "faq3_q": faq_info.get("faq3_q"), "faq3_a": faq_info.get("faq3_a")
         }
-        # 👑 나중에 AI 챗봇이 꺼내볼 수 있도록 데이터베이스 칸에도 텍스트 가이드라인 주소 박아두기
-        if guideline_txt_url:
-            config_insert["introduction"] = f"GUIDELINE_REF_URL:{guideline_txt_url}\n" + config_insert["introduction"]
-            
         supabase.table("gemi_clients").insert(config_insert).execute()
         print("✅ [DB Factory] 마스터 테이블 안전 적재 완료!")
     except Exception as e:
