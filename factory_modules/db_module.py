@@ -56,7 +56,6 @@ def save_client_data_v2(payload: dict, image_paths: list) -> dict:
                     public_url = f"{SUPABASE_URL}/storage/v1/object/public/{bucket_name}/{file_name}"
                     print(f"✅ [Storage] 파일 업로드 성공: {public_url}")
                     
-                    # 👑 [.txt 가이드라인 메모장 발견 시 특수 주소 칸으로 안착]
                     if path.endswith('.txt'):
                         guideline_txt_url = public_url
                     elif path == selected_main_path:
