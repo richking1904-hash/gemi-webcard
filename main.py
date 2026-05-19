@@ -82,7 +82,7 @@ def main_pipeline():
     print("\n📦 2단계: Supabase 스토리지 업로드 파이프라인 가동...")
     upload_result = save_client_data_v2(gui_payload, local_images)
     
-    # 이미지 주소와 메모장 가이드라인 주소를 무전 자산 패키지에 동시 정착
+    # 👑 이미지 주소와 가이드라인 메모장 주소를 파이썬 내부 메모리에 완벽 정착
     gui_payload["main_image_url"] = upload_result.get("main_image_url", "")
     gui_payload["other_image_urls"] = upload_result.get("other_image_urls", [])
     gui_payload["guideline_txt_url"] = upload_result.get("guideline_txt_url", "")

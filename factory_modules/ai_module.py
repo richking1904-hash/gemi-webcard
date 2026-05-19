@@ -15,11 +15,11 @@ def generate_webcard_code(gui_payload: dict) -> str:
     contact_info = gui_payload.get("contact_info", {})
     faq_info = gui_payload.get("faq_info", {})
     design_preference = gui_payload.get("design_preference", {})
+    ai_custom_requests = gui_payload.get("ai_custom_requests", {})
 
     main_image_url = gui_payload.get("main_image_url", "")
     other_image_urls = gui_payload.get("other_image_urls", [])
-    guideline_txt_url = gui_payload.get("guideline_txt_url", "")
-
+    
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")
     introduction = user_info.get("introduction", "")
@@ -31,16 +31,18 @@ def generate_webcard_code(gui_payload: dict) -> str:
         with open(template_path, "r", encoding="utf-8") as f: template_code = f.read()
     except Exception as e: return ""
 
+    client_context = f"Brand: {brand_name}, Style: {design_preference.get('style')}, Note: {ai_custom_requests.get('special_notes')}"
+    refined_intro = introduction
     try:
         response = openai_client.chat.completions.create(
             model="google/gemini-2.0-flash-001",
             messages=[
                 {"role": "system", "content": "You are a premium branding copywriter. Refine the given brand introduction into a luxury, minimalist presentation phrase (in Korean). Return ONLY the refined phrase without quotes."},
-                {"role": "user", "content": f"원문: {introduction}"}
+                {"role": "user", "content": f"원문: {introduction}\n컨셉: {client_context}"}
             ]
         )
         refined_intro = response.choices[0].message.content.strip()
-    except: refined_intro = introduction
+    except: pass
 
     rendered_code = template_code
     rendered_code = rendered_code.replace("${user_name}", director_name)
@@ -49,12 +51,10 @@ def generate_webcard_code(gui_payload: dict) -> str:
     rendered_code = rendered_code.replace("${DIRECTOR_NAME}", director_name)
     rendered_code = rendered_code.replace("${INTRODUCTION}", refined_intro)
     
-    # 👑 [명함 웹 변수 영역에 마스터 메모장 주소 주입]
-    rendered_code = rendered_code.replace("${GUIDELINE_TXT_URL}", guideline_txt_url if guideline_txt_url else "")
-    
     default_img = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe"
     final_img_url = main_image_url if main_image_url else default_img
     rendered_code = rendered_code.replace("${main_image_url}", final_img_url)
+    rendered_code = rendered_code.replace("${MAIN_IMAGE_URL}", final_img_url)
     
     for i in range(4):
         img_url = other_image_urls[i] if i < len(other_image_urls) else default_img
@@ -98,17 +98,17 @@ def generate_webcard_code(gui_payload: dict) -> str:
 def get_chatbot_response(gui_payload: dict, question: str) -> str:
     user_info = gui_payload.get("user_info", {})
     faq_info = gui_payload.get("faq_info", {})
-    
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")
-    guideline_url = gui_payload.get("guideline_txt_url", "")
     
-    # 👑 [슈파베이스 창고에서 가이드라인 메모장을 다운로드해 정독하는 실시간 RAG 기동단]
-    fetched_guideline_text = "제공된 특별 운영 가이드라인 지침서 없음."
+    # 👑 [슈파베이스 창고 주소에서 guideline.txt 실시간 정독하기]
+    guideline_url = gui_payload.get("guideline_txt_url", "")
+    fetched_guideline_text = "스튜디오 가이드라인 장부 기록 없음."
+    
     if guideline_url:
         try:
             res = requests.get(guideline_url, timeout=4)
-            if res.status_code == 200: fetched_guideline_text = res.text
+            if res.data and res.status_code == 200: fetched_guideline_text = res.text
         except: pass
 
     combined_question = f"Context: Brand:{brand_name}|Name:{director_name}\nQuestion: {question}"
@@ -118,17 +118,17 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
     except: pass
 
     client_info_str = (
-        f"브랜드: {brand_name}, 대표 디렉터 자격: {director_name}, 소개: {user_info.get('introduction')}\n"
-        f"📜 [슈파베이스 창고 연동 가이드라인 지침 본문 문서]:\n{fetched_guideline_text}\n"
-        f"고정FAQ1: {faq_info.get('faq1_q')} -> {faq_info.get('faq1_a')}\n"
-        f"고정FAQ2: {faq_info.get('faq2_q')} -> {faq_info.get('faq2_a')}"
+        f"브랜드명: {brand_name}, 대표 디렉터명: {director_name}, 소개: {user_info.get('introduction')}\n"
+        f"📜 [슈파베이스 연동 공식 가이드라인 지침 문서 내용]:\n{fetched_guideline_text}\n"
+        f"FAQ1: {faq_info.get('faq1_q')}->{faq_info.get('faq1_a')}\n"
+        f"FAQ2: {faq_info.get('faq2_q')}->{faq_info.get('faq2_a')}"
     )
 
     try:
         response = openai_client.chat.completions.create(
             model="google/gemini-2.0-flash-001",
             messages=[
-                {"role": "system", "content": f"너는 {brand_name}의 대표 디렉터 {director_name}를 대변하는 영리하고 세련된 AI 비서야. 제공된 가이드라인 운영 장부 문서를 철저히 정독하고 질문에 완벽하게 답변해라.\n\n--- 마스터 가이드라인 문서 장부 ---\n{client_info_str}\n\n🎯 [운영 및 대화 규칙]\n1. 비즈니스 비용, 작업 견적, 마감 스케줄 등 비즈니스 전문 질문은 문서 가이드라인에 적힌 팩트에 철저히 입각하여 신뢰감 있게 대답하세요.\n2. 가이드라인 문서에 아예 적혀있지 않은 엉뚱한 일상 질문, 농담, 사적인 위트 질문이 들어오면 거부하지 말고, 대표님의 고급스러운 이미지(Quiet Luxury)에 맞게 세련되고 위트 있게 농담으로 맞받아치세요.\n3. 답변 끝난 맨 마지막 줄에는 무조건 아래 의뢰서 전송 버튼 웹코드를 단 한 번만 삽입해라.\n<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#2563eb; color:white; font-weight:bold; font-size:12px; padding:10px 16px; border-radius:12px; width:100%; display:block; text-align:center;'>🚀 정식 프로젝트 의뢰하러 가기</button>"} ,
+                {"role": "system", "content": f"너는 {brand_name}의 친절하고 영리한 AI 비서야. 아래 제공된 공식 가이드라인 문서를 철저히 마스터하고 고객에게 답변해줘.\n\n--- 가이드라인 지침 문서 ---\n{client_info_str}\n\n🎯 [대화 규칙]\n1. 비즈니스 비용, 견적, 기간 등 전문적인 질문은 가이드라인 문서에 기재된 내용에만 100% 근거하여 프로페셔널하게 확답하세요.\n2. 문서에 없는 사적인 질문이나 장난, 엉뚱한 일상 질문이 들어오면 거부하지 말고, 대표님의 Quiet Luxury 스타일에 걸맞게 은근히 위트있고 세련되게 농담으로 받아치며 유연하게 대응하세요.\n3. 긴 버튼 코드 주입은 전면 금지합니다! 대신 문장 맨 마지막 줄에 다음 콤팩트 안내 문구만 깔끔하게 추가하세요.\n✨ 더 자세한 프로젝트 의뢰는 대화창 우측 상단의 [의뢰하기] 버튼을 눌러 남겨주시면 대표 디렉터 장형규가 신속히 직접 연락드리겠습니다! 👇"} ,
                 {"role": "user", "content": question}
             ]
         )
@@ -136,4 +136,4 @@ def get_chatbot_response(gui_payload: dict, question: str) -> str:
         try: supabase_client.table(SUPABASE_TABLE).insert({"question": combined_question, "answer": answer}).execute()
         except: pass
         return answer
-    except Exception as e: return "안녕하세요 디렉터 관제 비서입니다. 현재 일시적인 무전 혼선이 있으니 하단의 의뢰서 작성란을 이용해 주시면 대단히 감사하겠습니다."
+    except Exception as e: return "안녕하세요 디렉터 비서입니다. 현재 통신망 점검 중이오니 대화창 우측 상단 [의뢰하기] 버튼을 통해 접수해 주시면 대단히 감사하겠습니다."

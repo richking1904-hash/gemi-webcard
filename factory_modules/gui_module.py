@@ -22,6 +22,7 @@ def browse_files_manual():
         file_names = [os.path.basename(f) for f in dropped_files]
         main_image_combobox.configure(values=file_names)
         
+        # 👑 텍스트 문서를 제외한 진짜 파일들만 메인 이미지 기본값으로 지정하는 센스
         img_nodes = [f for f in file_names if not f.endswith('.txt')]
         if img_nodes:
             main_image_combobox.set(img_nodes[-1])
@@ -98,7 +99,7 @@ def on_submit_click():
         },
         "main_image_path": main_image_full_path,
         "ai_custom_requests": {
-            "special_notes": "원터치 자동화 스토리지 가이드라인 스트리밍 버전"
+            "special_notes": "가이드라인 파일 기반 원격 지능형 스트리밍 버전 가동"
         }
     }
     app.quit()

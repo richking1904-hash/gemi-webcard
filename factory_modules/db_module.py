@@ -86,6 +86,10 @@ def save_client_data_v2(payload: dict, image_paths: list) -> dict:
             "faq2_q": faq_info.get("faq2_q"), "faq2_a": faq_info.get("faq2_a"),
             "faq3_q": faq_info.get("faq3_q"), "faq3_a": faq_info.get("faq3_a")
         }
+        # 👑 나중에 AI 챗봇이 꺼내볼 수 있도록 데이터베이스 칸에도 텍스트 가이드라인 주소 박아두기
+        if guideline_txt_url:
+            config_insert["introduction"] = f"GUIDELINE_REF_URL:{guideline_txt_url}\n" + config_insert["introduction"]
+            
         supabase.table("gemi_clients").insert(config_insert).execute()
         print("✅ [DB Factory] 마스터 테이블 안전 적재 완료!")
     except Exception as e:
