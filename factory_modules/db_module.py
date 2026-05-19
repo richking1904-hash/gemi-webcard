@@ -1,6 +1,6 @@
 import os
 import requests
-import time  # 중복 이름을 방지하기 위해 시간 모듈을 유지합니다.
+import time
 from supabase import create_client, Client
 
 # =====================================================================
@@ -18,16 +18,13 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def send_telegram_alert(text: str):
-    """
-    📡 [텔레그램 즉시 발송 엔진] 
-    DB에 손님 정보가 꽂히는 순간 형규님 폰으로 실시간 톡을 쏴줍니다.
-    """
+    """📡 [텔레그램 즉시 발송 엔진]"""
     print("📡 [Telegram] 실시간 고객 알림 발송 시도 중...")
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": text,
-        "parse_mode": "Markdown"  # 글씨를 가독성 좋고 이쁘게 포맷팅
+        "parse_mode": "Markdown"
     }
     try:
         res = requests.post(url, json=payload, timeout=5)
@@ -40,66 +37,67 @@ def send_telegram_alert(text: str):
 
 
 def initialize_db_factory():
-    """
-    [AI 자동 공장 엔진] 프로그램이 켜질 때 Supabase를 확인하여,
-    메인 제어실 규격인 'gemi_customer_inquiry' 테이블이 없으면 자동으로 원격 크리에이트합니다.
-    """
-    print("🤖 [DB Factory] Supabase 테이블 인프라 점검 시작...")
-    
-    test_url = f"{SUPABASE_URL}/rest/v1/gemi_customer_inquiry?select=id&limit=1"
-    headers = {
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "apiKey": SUPABASE_KEY
-    }
-    
-    try:
-        response = requests.get(test_url, headers=headers)
-        if response.status_code == 200:
-            print("✅ [DB Factory] 'gemi_customer_inquiry' 마스터 테이블이 안전하게 준공되어 있습니다.")
-        elif response.status_code == 404 or "relation" in response.text.lower():
-            print("⚠️ [DB Factory] 마스터 테이블을 발견하지 못했습니다. 자동 복구 공정을 가동합니다...")
-            create_gemi_inquiry_table()
-    except Exception as e:
-        print(f"❌ [DB Factory] 테이블 인프라 점검 중 예외 발생: {e}")
-
-
-def create_gemi_inquiry_table():
-    """
-    Supabase 원격 SQL 인프라를 깨워 메인 규격에 맞는 마스터 테이블을 자동 생성합니다.
-    """
-    sql_url = f"{SUPABASE_URL}/rest/v1/rpc/exec_sql"
+    """🧱 [AI 자동 공장 엔진] 프로그램 구동 시 마스터 테이블 3종 세트 유무 검사 및 자동 생성"""
+    print("🤖 [DB Factory] Supabase 테이블 인프라 종합 진단 시작...")
     headers = {
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "apiKey": SUPABASE_KEY,
         "Content-Type": "application/json"
     }
     
-    query = """
-    CREATE TABLE IF NOT EXISTS public.gemi_customer_inquiry (
-        id BIGSERIAL PRIMARY KEY,
-        brand_name TEXT DEFAULT 'GeMi',
-        customer_name TEXT NOT NULL,
-        customer_contact TEXT NOT NULL,
-        inquiry_type TEXT NOT NULL,
-        message TEXT,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-    ALTER TABLE public.gemi_customer_inquiry ENABLE ROW LEVEL SECURITY;
-    CREATE POLICY "Allow Anonymous Inserts" ON public.gemi_customer_inquiry FOR INSERT WITH CHECK (true);
-    """
-    
+    # 1. 견적/챗봇 질문 통합 마스터 테이블 체크
+    check_table_and_create("gemi_customer_inquiry", headers)
+    # 2. 리모컨 입력 마스터 설정 테이블 체크
+    check_table_and_create("gemi_client_configs", headers)
+    # 3. 챗봇 토큰 절약용 대화 캐시 테이블 체크
+    check_table_and_create("gemi_chat_cache", headers)
+
+
+def check_table_and_create(table_name: str, headers: dict):
+    """특정 테이블이 없으면 REST API 호환 방식으로 원격 자동 생성 가동"""
+    test_url = f"{SUPABASE_URL}/rest/v1/{table_name}?select=id&limit=1"
     try:
-        requests.post(sql_url, headers=headers, json={"query": query})
-        print("🚀 [DB Factory] 'gemi_customer_inquiry' 마스터 테이블 원격 구축 완료 및 RLS 해제.")
+        res = requests.get(test_url, headers=headers)
+        if res.status_code == 200:
+            print(f"✅ [DB Factory] '{table_name}' 장부가 안전하게 구축되어 있습니다.")
+            return
+        
+        # 404 에러 등이 나면 테이블이 없는 것이므로 복구 모드 작동
+        print(f"⚠️ [DB Factory] '{table_name}' 장부가 없습니다. 자동 생성 공정을 가동합니다...")
+        
+        # 각 테이블 규격에 맞는 SQL 문 정의
+        if table_name == "gemi_customer_inquiry":
+            sql = """
+            CREATE TABLE IF NOT EXISTS public.gemi_customer_inquiry (
+                id BIGSERIAL PRIMARY KEY, brand_name TEXT DEFAULT 'GeMi', customer_name TEXT NOT NULL,
+                customer_contact TEXT NOT NULL, inquiry_type TEXT NOT NULL, message TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+            );
+            """
+        elif table_name == "gemi_client_configs":
+            sql = """
+            CREATE TABLE IF NOT EXISTS public.gemi_client_configs (
+                id BIGSERIAL PRIMARY KEY, director_name TEXT, brand_name TEXT, introduction TEXT,
+                phone TEXT, email TEXT, instagram TEXT, naver_blog TEXT, main_image_url TEXT,
+                faq1_q TEXT, faq1_a TEXT, faq2_q TEXT, faq2_a TEXT, faq3_q TEXT, faq3_a TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+            );
+            """
+        elif table_name == "gemi_chat_cache":
+            sql = """
+            CREATE TABLE IF NOT EXISTS public.gemi_chat_cache (
+                id BIGSERIAL PRIMARY KEY, question TEXT UNIQUE, answer TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+            );
+            """
+            
+        # REST API 안전 우회 방식으로 슈파베이스에 직접 테이블 생성 명령 주입
+        rpc_url = f"{SUPABASE_URL}/rest/v1/rpc/exec_sql"
+        requests.post(rpc_url, headers=headers, json={"query": sql})
+        print(f"🚀 [DB Factory] '{table_name}' 마스터 장부 원격 생성 및 연동 완료!")
     except Exception as e:
-        print(f"❌ [DB Factory] 원격 테이블 생성 실패: {e}")
+        print(f"❌ [DB Factory] '{table_name}' 점검/생성 중 오류: {e}")
 
 
 def save_project_estimate(brand_name: str, name: str, phone: str, p_type: str, desc: str) -> bool:
-    """
-    [실시간 견적서 수집 + 텔레그램 연동 완료] 명함 웹페이지 견적 폼에서 손님이 입력 시
-    DB 저장 후 즉시 형규님께 알림을 쏩니다.
-    """
+    """[실시간 견적서 수집 + 텔레그램 연동]"""
     print(f"📬 [DB Factory] 신규 견적서 양식 인입! (의뢰인: {name}님)")
     try:
         db_insert = {
@@ -112,7 +110,6 @@ def save_project_estimate(brand_name: str, name: str, phone: str, p_type: str, d
         supabase.table("gemi_customer_inquiry").insert(db_insert).execute()
         print("💾 [DB Factory] 견적 데이터가 마스터 테이블에 안전하게 영구 저장되었습니다.")
         
-        # 🔥 [실시간 텔레그램 알림 타격]
         alert_msg = (
             f"🔔 *[GeMi 공장] 신규 견적서 도착!*\n\n"
             f"🏢 *브랜드:* {brand_name}\n"
@@ -129,10 +126,7 @@ def save_project_estimate(brand_name: str, name: str, phone: str, p_type: str, d
 
 
 def save_chatbot_question(brand_name: str, question_content: str) -> bool:
-    """
-    🎯 [챗봇 실시간 질문 수집 + 텔레그램 연동 완료] 손님이 실시간 챗봇에 입력한 내용을
-    DB에 기록하고 형규님께 실시간 알림을 보냅니다.
-    """
+    """[챗봇 실시간 질문 수집 + 텔레그램 연동]"""
     print(f"💬 [DB Factory] 챗봇 실시간 질문 포착 및 수집 중...")
     try:
         db_insert = {
@@ -145,7 +139,6 @@ def save_chatbot_question(brand_name: str, question_content: str) -> bool:
         supabase.table("gemi_customer_inquiry").insert(db_insert).execute()
         print("💾 [DB Factory] 챗봇 질문 내용이 마스터 테이블에 기록되었습니다.")
         
-        # 🔥 [실시간 텔레그램 알림 타격]
         alert_msg = (
             f"💬 *[GeMi 챗봇] 손님 질문 실시간 포착!*\n\n"
             f"🏢 *브랜드:* {brand_name}\n"
@@ -159,49 +152,80 @@ def save_chatbot_question(brand_name: str, question_content: str) -> bool:
 
 
 def save_client_data_v2(payload: dict, image_paths: list) -> dict:
-    """
-    [스토리지 마스터] 고유 타임스탬프 파일명 치환을 통해 
-    중복 에러를 원천 차단하고 퍼블릭 이미지 URL 주소를 뽑아냅니다.
-    """
-    print("🔓 [Storage] 파일명 중복 회피 파이프라인 가동...")
+    """[스토리지 마스터 + 리모컨 데이터 DB 백업 하이브리드 업그레이드 수리 완료]"""
+    print("🔓 [Storage] 파일명 중복 회피 및 스토리지 업로드 파이프라인 가동...")
     bucket_name = "gemi_assets"
     main_image_url = ""
     other_image_urls = []
     
-    if not image_paths:
-        return {"success": True, "main_image_url": "", "other_image_urls": []}
+    # 1. 원본 이미지 수집 및 스토리지 적재 파트
+    selected_main_path = payload.get("main_image_path", "")
+    
+    if image_paths:
+        for path in image_paths:
+            if not os.path.exists(path):
+                continue
+                
+            base_name = os.path.basename(path)
+            name_part, ext_part = os.path.splitext(base_name)
+            timestamp = int(time.time())
+            file_name = f"{name_part}_{timestamp}{ext_part}"
+            
+            try:
+                with open(path, "rb") as f:
+                    file_data = f.read()
+                    
+                upload_url = f"{SUPABASE_URL}/storage/v1/object/{bucket_name}/{file_name}"
+                headers = {
+                    "Authorization": f"Bearer {SUPABASE_KEY}",
+                    "apiKey": SUPABASE_KEY,
+                    "Content-Type": "image/png" if file_name.endswith('.png') else "image/jpeg"
+                }
+                
+                response = requests.post(upload_url, headers=headers, data=file_data)
+                if response.status_code in [200, 201]:
+                    public_url = f"{SUPABASE_URL}/storage/v1/object/public/{bucket_name}/{file_name}"
+                    print(f"✅ [Storage] 업로드 대성공: {public_url}")
+                    
+                    # 💡 형규님이 콤보박스에서 고른 진짜 대표 이미지 경로와 일치하는지 판별하여 정확히 바인딩
+                    if path == selected_main_path:
+                        main_image_url = public_url
+                    else:
+                        other_image_urls.append(public_url)
+            except Exception as e:
+                print(f"❌ [Storage] 전송 오류: {e}")
 
-    for path in image_paths:
-        if not os.path.exists(path):
-            continue
-            
-        base_name = os.path.basename(path)
-        name_part, ext_part = os.path.splitext(base_name)
-        timestamp = int(time.time())
-        file_name = f"{name_part}_{timestamp}{ext_part}"
+    # 만약 위 매칭 로직으로도 안 잡혔을 시 방어벽 작동
+    if not main_image_url and other_image_urls:
+        main_image_url = other_image_urls.pop(0)
+
+    # 🎯 2. [핵심 수리] 리모컨 입력 텍스트 정보들을 Supabase 마스터 DB 테이블에 영구 적재!
+    print("💾 [DB Factory] 리모컨 텍스트 정보를 Supabase 중앙 장부에 백업하는 중...")
+    try:
+        user_info = payload.get("user_info", {})
+        contact_info = payload.get("contact_info", {})
+        faq_info = payload.get("faq_info", {})
         
-        try:
-            with open(path, "rb") as f:
-                file_data = f.read()
-                
-            upload_url = f"{SUPABASE_URL}/storage/v1/object/{bucket_name}/{file_name}"
-            headers = {
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "apiKey": SUPABASE_KEY,
-                "Content-Type": "image/png" if file_name.endswith('.png') else "image/jpeg"
-            }
-            
-            response = requests.post(upload_url, headers=headers, data=file_data)
-            if response.status_code in [200, 201]:
-                public_url = f"{SUPABASE_URL}/storage/v1/object/public/{bucket_name}/{file_name}"
-                print(f"✅ [Storage] 업로드 대성공: {public_url}")
-                
-                if not main_image_url:
-                    main_image_url = public_url
-                else:
-                    other_image_urls.append(public_url)
-        except Exception as e:
-            print(f"❌ [Storage] 전송 오류: {e}")
+        config_insert = {
+            "director_name": user_info.get("name"),
+            "brand_name": user_info.get("brand_name"),
+            "introduction": user_info.get("introduction"),
+            "phone": contact_info.get("phone"),
+            "email": contact_info.get("email"),
+            "instagram": contact_info.get("instagram"),
+            "naver_blog": contact_info.get("naver_blog"),
+            "main_image_url": main_image_url,
+            "faq1_q": faq_info.get("faq1_q"),
+            "faq1_a": faq_info.get("faq1_a"),
+            "faq2_q": faq_info.get("faq2_q"),
+            "faq2_a": faq_info.get("faq2_a"),
+            "faq3_q": faq_info.get("faq3_q"),
+            "faq3_a": faq_info.get("faq3_a")
+        }
+        supabase.table("gemi_client_configs").insert(config_insert).execute()
+        print("✅ [DB Factory] 리모컨 설정 데이터가 'gemi_client_configs' 테이블에 성공적으로 꽂혔습니다!")
+    except Exception as e:
+        print(f"❌ [DB Factory] 리모컨 설정 데이터 적재 실패: {e}")
 
     return {
         "success": True,
