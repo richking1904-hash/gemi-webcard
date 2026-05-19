@@ -19,7 +19,6 @@
         .sub-page-content::-webkit-scrollbar { width: 4px; }
         .sub-page-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         
-        /* 🎯 단정하게 다이어트한 하단 스마트 그리드 */
         .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
         .smart-grid button:nth-child(1):nth-last-child(3) { grid-column: span 2 / span 2; font-weight: 800; background-color: #ffffff; color: #0c0d0e; }
         .smart-grid button:nth-child(1):nth-last-child(3):hover { background-color: #e5e7eb; }
@@ -45,7 +44,6 @@
                         <span class="text-[11px]">📞</span>
                         <span class="text-[9px] tracking-wider font-bold text-stone-300 group-hover:text-white transition-all uppercase">CALL</span>
                     </a>
-                    
                     <div class="flex items-center gap-1.5 text-stone-400 cursor-default select-all">
                         <span class="text-[11px] opacity-60">✉️</span>
                         <span class="text-[10px] font-medium tracking-wide font-mono">${EMAIL}</span>
@@ -54,8 +52,8 @@
 
                 <div class="space-y-2.5 w-full pb-1">
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="${INSTAGRAM}" target="_blank" style="${INSTAGRAM_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">Instagram</a>
-                        <a href="${NAVER_BLOG}" target="_blank" style="${BLOG_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">Naver Blog</a>
+                        <a href="${SNS1_URL}" target="_blank" style="${SNS1_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">${SNS1_TYPE}</a>
+                        <a href="${SNS2_URL}" target="_blank" style="${SNS2_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">${SNS2_TYPE}</a>
                     </div>
                     
                     <div class="smart-grid">
@@ -89,13 +87,9 @@
                 <div class="space-y-4">
                     <div class="space-y-1.5"><label class="block text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="홍길동"></div>
                     <div class="space-y-1.5"><label class="block text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="010-0000-0000"></div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">프로젝트 유형</label>
-                        <select id="formProjectType" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-stone-300">
-                            <option value="브랜딩 및 로고 디자인">브랜딩 및 로고 디자인</option>
-                            <option value="패키지 / 상세페이지">패키지 / 상세페이지 제품 디자인</option>
-                            <option value="웹 / 모바일 웹명함 구축">웹 / 모바일 웹명함 구축</option>
-                        </select>
-                    </div>
+                    
+                    <div class="space-y-1.5"><label class="block text-stone-400">프로젝트 유형 (자유 입력)</label><input type="text" id="formProjectType" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="예: 호텔 타올 브랜딩 의뢰, 상세페이지 제작 등"></div>
+                    
                     <div class="space-y-1.5"><label class="block text-stone-400">문의 및 요청사항 상세</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="의뢰하실 내용을 상세히 적어주세요."></textarea></div>
                     <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl shadow-lg uppercase hover:bg-stone-200 transition-all">SUBMIT REQUEST</button>
                 </div>
@@ -167,11 +161,11 @@
         async function submitEstimate() {
             const name = document.getElementById('formClientName').value.trim();
             const phone = document.getElementById('formClientPhone').value.trim();
-            const type = document.getElementById('formProjectType').value;
+            const type = document.getElementById('formProjectType').value.trim(); // 👑 자유 입력 오타 클리어링
             const desc = document.getElementById('formProjectDesc').value.trim();
             const btn = document.getElementById('submitBtn');
 
-            if(!name || !phone || !desc) { alert("모든 항목을 입력해주세요."); return; }
+            if(!name || !phone || !type || !desc) { alert("모든 항목을 입력해주세요."); return; }
 
             btn.disabled = true;
             btn.innerText = "SENDING...";
@@ -187,6 +181,7 @@
             };
             
             try {
+                // 📡 1단계: Supabase 실시간 백업 적재
                 const res = await fetch(S_URL + "/rest/v1/gemi_customer_inquiry", {
                     method: "POST",
                     headers: {
@@ -199,6 +194,7 @@
                 });
 
                 if(res.ok) {
+                    // 📡 2단계: 텔레그램 직통 무전 격발 (오타 변수 수리 완료본 유지)
                     const part1 = "8634715913";
                     const part2 = "AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
                     const botToken = part1 + ":" + part2;
@@ -221,12 +217,14 @@
                     
                     document.getElementById('formClientName').value = '';
                     document.getElementById('formClientPhone').value = '';
+                    document.getElementById('formProjectType').value = '';
                     document.getElementById('formProjectDesc').value = '';
                     switchPage('mainPage');
                 } else {
                     alert("서버 통신 장부 저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
                 }
             } catch (e) { 
+                console.error("Network Error:", e);
                 alert("네트워크 연결에 실패했습니다.");
             } finally {
                 btn.disabled = false;

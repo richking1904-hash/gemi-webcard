@@ -60,7 +60,7 @@ def on_submit_click():
             main_image_full_path = path
             break
 
-    # 💡 후속 부품들과 완벽 결합되도록 단독 방으로 명시 탈출
+    # 💡 [가변 SNS 데이터 마스터 매칭 수집 완료]
     final_payload = {
         "user_info": {
             "name": name_entry.get().strip(),
@@ -71,8 +71,10 @@ def on_submit_click():
         "contact_info": {
             "phone": phone_entry.get().strip(),
             "email": email_entry.get().strip(),
-            "instagram": insta_entry.get().strip(),
-            "naver_blog": blog_entry.get().strip()
+            "sns1_type": sns1_combobox.get(),
+            "sns1_url": sns1_entry.get().strip(),
+            "sns2_type": sns2_combobox.get(),
+            "sns2_url": sns2_entry.get().strip()
         },
         "faq_info": {
             "faq1_q": faq_q1_entry.get().strip(),
@@ -89,7 +91,7 @@ def on_submit_click():
             "all_dropped_files": dropped_files,
             "main_image_path": main_image_full_path
         },
-        "main_image_path": main_image_full_path,  # 🎯 관제탑 스캔 전용 패스 다이렉트 주입
+        "main_image_path": main_image_full_path,
         "ai_custom_requests": {
             "special_notes": ai_requests_textbox.get("1.0", "end").strip()
         }
@@ -104,11 +106,12 @@ def export_gui_data():
 
 app = ctk.CTk()
 app.title("GeMi WebCard Director v1.0")
-app.geometry("620x840")
+app.geometry("620x860")
 ctk.set_appearance_mode("dark")
 scroll_frame = ctk.CTkScrollableFrame(app, width=590, height=820, fg_color="transparent")
 scroll_frame.pack(pady=10, padx=10, fill="both", expand=True)
 ctk.CTkLabel(scroll_frame, text="GeMi WebCard Director v1.0", font=("Helvetica", 22)).pack(pady=10)
+
 ctk.CTkLabel(scroll_frame, text="디렉터 이름 (필수):").pack(anchor="w", padx=25)
 name_entry = ctk.CTkEntry(scroll_frame, width=500, fg_color="#2A2A2A"); name_entry.pack(pady=5)
 ctk.CTkLabel(scroll_frame, text="브랜드명 (필수):").pack(anchor="w", padx=25)
@@ -118,18 +121,27 @@ introduction_entry = ctk.CTkEntry(scroll_frame, width=500, fg_color="#2A2A2A"); 
 ctk.CTkLabel(scroll_frame, text="🌐 원하는 웹사이트 주소 이름 (선택):", text_color="#64B5F6").pack(anchor="w", padx=25)
 url_name_entry = ctk.CTkEntry(scroll_frame, width=500, fg_color="#1E293B", border_color="#3B82F6"); url_name_entry.pack(pady=5)
 
+# 기본 인적사항 프레임
 contact_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); contact_frame.pack(fill="x", padx=25, pady=5)
 ctk.CTkLabel(contact_frame, text="📞 휴대폰 번호:").grid(row=0, column=0, sticky="w")
 ctk.CTkLabel(contact_frame, text="✉️ 이메일 주소:").grid(row=0, column=1, sticky="w", padx=20)
 phone_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); phone_entry.grid(row=1, column=0)
 email_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); email_entry.grid(row=1, column=1, padx=20)
-ctk.CTkLabel(contact_frame, text="📸 인스타그램 ID:").grid(row=2, column=0, sticky="w", pady=5)
-ctk.CTkLabel(contact_frame, text="🌐 네이버 블로그 URL:").grid(row=2, column=1, sticky="w", padx=20, pady=5)
-insta_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); insta_entry.grid(row=3, column=0)
-blog_entry = ctk.CTkEntry(contact_frame, width=240, fg_color="#2A2A2A"); blog_entry.grid(row=3, column=1, padx=20)
+
+# 👑 [가변 SNS 연동 레이아웃 개조 영역]
+sns_options = ["Instagram", "Naver Blog", "KakaoTalk", "Telegram", "YouTube"]
+ctk.CTkLabel(scroll_frame, text="📱 SNS 채널 1 선택 및 주소(아이디):").pack(anchor="w", padx=25, pady=(5,0))
+sns1_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); sns1_frame.pack(fill="x", padx=25, pady=2)
+sns1_combobox = ctk.CTkComboBox(sns1_frame, values=sns_options, width=120, fg_color="#2A2A2A"); sns1_combobox.pack(side="left"); sns1_combobox.set("Instagram")
+sns1_entry = ctk.CTkEntry(sns1_frame, width=370, fg_color="#2A2A2A", placeholder_text="링크 또는 ID 입력"); sns1_entry.pack(side="right")
+
+ctk.CTkLabel(scroll_frame, text="🌐 SNS 채널 2 선택 및 주소(아이디):").pack(anchor="w", padx=25, pady=(5,0))
+sns2_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); sns2_frame.pack(fill="x", padx=25, pady=2)
+sns2_combobox = ctk.CTkComboBox(sns2_frame, values=sns_options, width=120, fg_color="#2A2A2A"); sns2_combobox.pack(side="left"); sns2_combobox.set("Naver Blog")
+sns2_entry = ctk.CTkEntry(sns2_frame, width=370, fg_color="#2A2A2A", placeholder_text="링크 또는 ID 입력"); sns2_entry.pack(side="right")
 
 design_style_combobox = ctk.CTkComboBox(scroll_frame, values=["[차분한 미니멀]", "[고급스러운 호텔 타월 감성]", "[모던 스튜디오]", "[네추럴 그린]"], width=500, fg_color="#2A2A2A")
-design_style_combobox.pack(pady=10); design_style_combobox.set("[차분한 미니멀]")
+design_style_combobox.pack(pady=15); design_style_combobox.set("[차분한 미니멀]")
 
 faq_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent"); faq_frame.pack(fill="x", padx=25, pady=5)
 faq_q1_entry = ctk.CTkEntry(faq_frame, width=240, placeholder_text="질문 1", fg_color="#2A2A2A"); faq_q1_entry.grid(row=0, column=0, pady=2)

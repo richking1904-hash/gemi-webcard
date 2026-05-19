@@ -60,14 +60,34 @@ def generate_webcard_code(gui_payload: dict) -> str:
         img_url = other_image_urls[i] if i < len(other_image_urls) else default_img
         rendered_code = rendered_code.replace(f"${{SUB_IMAGE_URL_{i+1}}}", img_url)
 
-    # 📱 연락처 정보 치환 (전화번호와 이메일 주소 모두 정상 바인딩)
+    # 📱 연락처 마스터 데이터 바인딩
     rendered_code = rendered_code.replace("${PHONE}", contact_info.get("phone", ""))
     rendered_code = rendered_code.replace("${EMAIL}", contact_info.get("email", ""))
-    rendered_code = rendered_code.replace("${INSTAGRAM}", contact_info.get("instagram", ""))
-    rendered_code = rendered_code.replace("${NAVER_BLOG}", contact_info.get("naver_blog", ""))
 
-    rendered_code = rendered_code.replace("${INSTAGRAM_DISPLAY}", "display: inline-block;" if contact_info.get("instagram") else "display: none !important;")
-    rendered_code = rendered_code.replace("${BLOG_DISPLAY}", "display: inline-block;" if contact_info.get("naver_blog") else "display: none !important;")
+    # 👑 [하이브리드 동적 가변 SNS 포매팅 엔진]
+    sns_list = [
+        {"type": contact_info.get("sns1_type"), "url": contact_info.get("sns1_url"), "num": 1},
+        {"type": contact_info.get("sns2_type"), "url": contact_info.get("sns2_url"), "num": 2}
+    ]
+    
+    for item in sns_list:
+        s_type = item["type"]
+        s_url = item["url"]
+        s_num = item["num"]
+        
+        # 아이디만 넣었을 때 자동으로 전용 도메인 링크를 합성해 주는 방어선
+        if s_url and not s_url.startswith("http"):
+            if s_type == "Instagram": s_url = f"https://instagram.com/{s_url}"
+            elif s_type == "Naver Blog": s_url = f"https://blog.naver.com/{s_url}"
+            elif s_type == "KakaoTalk": s_url = f"https://open.kakao.com/me/{s_url}"
+            elif s_type == "Telegram": s_url = f"https://t.me/{s_url}"
+            elif s_type == "YouTube": s_url = f"https://youtube.com/@{s_url}"
+            
+        display_rule = "display: inline-block;" if s_url else "display: none !important;"
+        
+        rendered_code = rendered_code.replace(f"${{SNS{s_num}_TYPE}}", s_type if s_type else "")
+        rendered_code = rendered_code.replace(f"${{SNS{s_num}_URL}}", s_url if s_url else "#")
+        rendered_code = rendered_code.replace(f"${{SNS{s_num}_DISPLAY}}", display_rule)
 
     rendered_code = rendered_code.replace("${question_1}", faq_info.get("faq1_q", "문의하기 1"))
     rendered_code = rendered_code.replace("${answer_1}", faq_info.get("faq1_a", "답변 준비 중입니다."))
