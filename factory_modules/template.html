@@ -68,8 +68,8 @@
             <div class="sub-page-content flex-1 overflow-y-auto p-5 space-y-5 text-xs">
                 <h2 class="text-lg font-bold text-white tracking-tight">프로젝트 의뢰 및 협업 문의</h2>
                 <div class="space-y-4">
-                    <div class="space-y-1.5"><label class="block text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
+                    <div class="space-y-1.5"><label class="block text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="홍길동"></div>
+                    <div class="space-y-1.5"><label class="block text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="010-0000-0000"></div>
                     <div class="space-y-1.5"><label class="block text-stone-400">프로젝트 유형</label>
                         <select id="formProjectType" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-stone-300">
                             <option value="브랜딩 및 로고 디자인">브랜딩 및 로고 디자인</option>
@@ -77,8 +77,8 @@
                             <option value="웹 / 모바일 웹명함 구축">웹 / 모바일 웹명함 구축</option>
                         </select>
                     </div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">문의 및 요청사항 상세</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></textarea></div>
-                    <button onclick="submitEstimate()" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl shadow-lg uppercase">SUBMIT REQUEST</button>
+                    <div class="space-y-1.5"><label class="block text-stone-400">문의 및 요청사항 상세</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="의뢰하실 내용을 상세히 적어주세요."></textarea></div>
+                    <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl shadow-lg uppercase hover:bg-stone-200 transition-all">SUBMIT REQUEST</button>
                 </div>
             </div>
         </div>
@@ -107,8 +107,9 @@
     </div>
 
     <script>
-        const TG_BOT_TOKEN = "8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
-        const TG_CHAT_ID = "859745575";
+        // ⚙️ 슈파베이스와 직접 거래를 트기 위한 다이렉트 자산 키 바인딩
+        const S_URL = "https://bjbpjkeahkupmeuvfwys.supabase.co";
+        const S_KEY = "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU";
 
         function switchPage(pageId) {
             ['mainPage', 'promoPage', 'contactPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -139,34 +140,71 @@
             if(!text) return;
             appendMessage('user', text);
             input.value = '';
-            
-            // 💡 실시간 대화창은 알림 발송을 생략하여 디렉터님 스마트폰 음소거 가동
             appendMessage('bot', "생각 중... 잠시만 기다려 주세요.");
         }
 
         document.getElementById('widgetSendBtn').addEventListener('click', sendAiMessage);
         document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
 
-        // 📬 [정식 결제선 알림 격발] 의뢰서 제출 완료 시에만 알림 폭탄 격발!
+        // 🎯 [정석 파이프라인 연동 복구 부품] 의뢰서 완료 버튼을 누르면 가동하는 무전기
         async function submitEstimate() {
             const name = document.getElementById('formClientName').value.trim();
             const phone = document.getElementById('formClientPhone').value.trim();
             const type = document.getElementById('formProjectType').value;
             const desc = document.getElementById('formProjectDesc').value.trim();
+            const btn = document.getElementById('submitBtn');
 
             if(!name || !phone || !desc) { alert("모든 항목을 입력해주세요."); return; }
 
-            const alertText = `🔔 *[GeMi 명함 - 신규 의뢰서 접수!]*\n\n👤 *성함:* {name}님\n📞 *연락처:* {phone}\n🏷️ *유형:* {type}\n💬 *내용:* {desc}`;
+            // 중복 클릭 방지 락 잠금
+            btn.disabled = true;
+            btn.innerText = "SENDING...";
+
+            // 📂 데이터 가공 주머니 포장
+            const dbPayload = {
+                brand_name: "${brand_name}",
+                customer_name: name,
+                customer_contact: phone,
+                inquiry_type: type,
+                message: desc
+            };
             
             try {
-                await fetch(`https://api.telegram.org/bot\${TG_BOT_TOKEN}/sendMessage`, {
+                // 📡 [정석 납땜] 겉돌지 말고 슈파베이스의 진짜 마스터 장부방으로 즉시 전송 격발!
+                const res = await fetch(`${S_URL}/rest/v1/gemi_customer_inquiry`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: alertText, parse_mode: "Markdown" })
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${S_KEY}`,
+                        "apiKey": S_KEY,
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify(dbPayload)
                 });
-                alert("✨ 의뢰가 대성공으로 접수되었습니다. 디렉터 장형규가 신속히 연락드리겠습니다!");
-                switchPage('mainPage');
-            } catch (e) { console.error(e); }
+
+                if(res.ok) {
+                    alert("✨ 의뢰서가 성공적으로 접수되었습니다! 디렉터 장형규가 신속히 연락드리겠습니다.");
+                    // 입력 폼 청소
+                    document.getElementById('formClientName').value = '';
+                    document.getElementById('formClientPhone').value = '';
+                    document.getElementById('formProjectDesc').value = '';
+                    switchPage('mainPage');
+                    
+                    // 💡 안내: 슈파베이스 장부에 성공적으로 들어가면, 
+                    // 파이썬 백엔드(에지 펑션/서버 트리거)단에서 연동해둔 형규님 텔레그램으로 자동 알림 진동이 타격됩니다!
+                } else {
+                    const errText = await res.text();
+                    console.error("Supabase Error:", errText);
+                    alert("서버 통신 장부 저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
+                }
+            } catch (e) { 
+                console.error("Network Error:", e);
+                alert("네트워크 연결에 실패했습니다.");
+            } finally {
+                // 버튼 락 해제
+                btn.disabled = false;
+                btn.innerText = "SUBMIT REQUEST";
+            }
         }
     </script>
 </body>
