@@ -145,7 +145,7 @@
         document.getElementById('widgetSendBtn').addEventListener('click', sendAiMessage);
         document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
 
-        // 🎯 [완벽 연동 합선 패치] 저장 성공 도장이 찍히는 순간 브라우저가 텔레그램을 즉각 강제 타격합니다.
+        // 🎯 [파이썬 치환 엔진 간섭 원천 차단 완벽 패치 버전]
         async function submitEstimate() {
             const name = document.getElementById('formClientName').value.trim();
             const phone = document.getElementById('formClientPhone').value.trim();
@@ -158,8 +158,11 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
+            // 💡 상단 <title> 태그에 구워진 글자에서 안전하게 브랜드명을 역추출하여 파이썬 간섭을 완벽하게 우회합니다.
+            const extractedBrand = document.title.includes(' - ') ? document.title.split(' - ')[1] : "GeMi";
+
             const dbPayload = {
-                brand_name: "${brand_name}",
+                brand_name: extractedBrand,
                 customer_name: name,
                 customer_contact: phone,
                 inquiry_type: type,
@@ -167,12 +170,12 @@
             };
             
             try {
-                // 📡 1단계: 슈파베이스 서버 마스터 장부에 실시간 적재 전송
-                const res = await fetch(`${S_URL}/rest/v1/gemi_customer_inquiry`, {
+                // 📡 1단계: Supabase 실시간 백업 적재 (여긴 파이썬 변수가 없어서 무조건 성공함)
+                const res = await fetch(S_URL + "/rest/v1/gemi_customer_inquiry", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${S_KEY}`,
+                        "Authorization": "Bearer " + S_KEY,
                         "apiKey": S_KEY,
                         "Prefer": "return=minimal"
                     },
@@ -180,23 +183,25 @@
                 });
 
                 if(res.ok) {
-                    // 📡 2단계: 저장 확인 마크가 뜨면, 브라우저가 형규님 텔레그램 비서를 직접 강제 격발!
-                    const botToken = "8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
+                    // 📡 2단계: 파이썬의 문자열 치환 엔진이 가로채지 못하도록 글자를 완전히 쪼개서 조립한 텔레그램 탄도 미사일
+                    const part1 = "8634715913";
+                    const part2 = "AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
+                    const botToken = part1 + ":" + part2;
                     const chatId = "859745575";
                     
-                    // 파이썬 빌드 시 치환 충돌 오류가 나지 않도록 역슬래시 개조 처리 완료
-                    const tgText = "🔔 *[GeMi 명함 - 신규 의뢰서 도착!]*\n\n" +
-                                   "🏢 *브랜드:* " + "${brand_name}" + "\n" +
-                                   "👤 *의뢰인:* " + name + "님\n" +
-                                   "📞 *연락처:* " + phone + "\n" +
-                                   "🏷️ *문의유형:* " + type + "\n" +
-                                   "💬 *의뢰내용:* " + desc;
+                    const messageText = "🚨 *[GeMi 명함 - 신규 의뢰서 접수!]*\n\n" +
+                                        "🏢 *브랜드:* " + extractedBrand + "\n" +
+                                        "👤 *의뢰인:* " + name + "님\n" +
+                                        "📞 *연락처:* " + phone + "\n" +
+                                        "🏷️ *문의유형:* " + type + "\n" +
+                                        "💬 *의뢰내용:* " + desc;
 
+                    // 브라우저가 직접 텔레그램 API 서버로 직접 연사 격발
                     await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ chat_id: chatId, text: tgText, parse_mode: "Markdown" })
-                    }).catch(e => console.log("TG 무전 통신 자체 지연 패스", e));
+                        body: JSON.stringify({ chat_id: chatId, text: messageText, parse_mode: "Markdown" })
+                    });
 
                     alert("✨ 의뢰서가 성공적으로 접수되었습니다! 디렉터 장형규가 신속히 연락드리겠습니다.");
                     

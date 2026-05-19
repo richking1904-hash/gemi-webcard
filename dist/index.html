@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장형규 - 릴라라</title>
+    <title>장형규 - gEmIIIIII</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #121314; background: radial-gradient(circle at center, #1f2124 0%, #0f1011 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }
@@ -25,14 +25,14 @@
     <div class="centered-card">
         <div id="mainPage" class="w-full h-full flex flex-col justify-between">
             <div class="card-image-wrapper">
-                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a16_1779172552.jpg" alt="Profile Image" class="w-full h-full object-cover">
+                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-16T231828.224_1779173177.png" alt="Profile Image" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
             </div>
             <div class="card-content-wrapper">
                 <div class="text-center pt-4">
                     <h1 class="text-3xl font-bold tracking-tight text-white mb-1.5">장형규</h1>
-                    <p class="text-xs text-stone-400 font-semibold tracking-widest uppercase mb-4">릴라라</p>
-                    <p class="text-xs text-stone-300 leading-relaxed max-w-[85%] mx-auto">고요한 아름다움, 릴라라</p>
+                    <p class="text-xs text-stone-400 font-semibold tracking-widest uppercase mb-4">gEmIIIIII</p>
+                    <p class="text-xs text-stone-300 leading-relaxed max-w-[85%] mx-auto">고요한 아름다움, gEmIIIIII.</p>
                 </div>
                 <div class="space-y-3 w-full pb-4">
                     <div class="grid grid-cols-2 gap-2">
@@ -54,8 +54,8 @@
             </div>
             <div class="sub-page-content flex-1 overflow-y-auto p-5">
                 <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="space-y-3"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T222135.393_1779172553.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T222449.229_1779172556.png" class="rounded-xl shadow-md"></div>
-                    <div class="space-y-3 pt-6"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T222158.495_1779172554.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T222542.476_1779172556.png" class="rounded-xl shadow-md"></div>
+                    <div class="space-y-3"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T213701.991_1779173179.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T234701.105_1779173180.png" class="rounded-xl shadow-md"></div>
+                    <div class="space-y-3 pt-6"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T215313.805_1779173179.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T234736.148_1779173180.png" class="rounded-xl shadow-md"></div>
                 </div>
             </div>
         </div>
@@ -145,7 +145,7 @@
         document.getElementById('widgetSendBtn').addEventListener('click', sendAiMessage);
         document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
 
-        // 🎯 [완벽 연동 합선 패치] 저장 성공 도장이 찍히는 순간 브라우저가 텔레그램을 즉각 강제 타격합니다.
+        // 🎯 [파이썬 치환 엔진 간섭 원천 차단 완벽 패치 버전]
         async function submitEstimate() {
             const name = document.getElementById('formClientName').value.trim();
             const phone = document.getElementById('formClientPhone').value.trim();
@@ -158,8 +158,11 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
+            // 💡 상단 <title> 태그에 구워진 글자에서 안전하게 브랜드명을 역추출하여 파이썬 간섭을 완벽하게 우회합니다.
+            const extractedBrand = document.title.includes(' - ') ? document.title.split(' - ')[1] : "GeMi";
+
             const dbPayload = {
-                brand_name: "릴라라",
+                brand_name: extractedBrand,
                 customer_name: name,
                 customer_contact: phone,
                 inquiry_type: type,
@@ -167,12 +170,12 @@
             };
             
             try {
-                // 📡 1단계: 슈파베이스 서버 마스터 장부에 실시간 적재 전송
-                const res = await fetch(`${S_URL}/rest/v1/gemi_customer_inquiry`, {
+                // 📡 1단계: Supabase 실시간 백업 적재 (여긴 파이썬 변수가 없어서 무조건 성공함)
+                const res = await fetch(S_URL + "/rest/v1/gemi_customer_inquiry", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${S_KEY}`,
+                        "Authorization": "Bearer " + S_KEY,
                         "apiKey": S_KEY,
                         "Prefer": "return=minimal"
                     },
@@ -180,23 +183,25 @@
                 });
 
                 if(res.ok) {
-                    // 📡 2단계: 저장 확인 마크가 뜨면, 브라우저가 형규님 텔레그램 비서를 직접 강제 격발!
-                    const botToken = "8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
+                    // 📡 2단계: 파이썬의 문자열 치환 엔진이 가로채지 못하도록 글자를 완전히 쪼개서 조립한 텔레그램 탄도 미사일
+                    const part1 = "8634715913";
+                    const part2 = "AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
+                    const botToken = part1 + ":" + part2;
                     const chatId = "859745575";
                     
-                    // 파이썬 빌드 시 치환 충돌 오류가 나지 않도록 역슬래시 개조 처리 완료
-                    const tgText = "🔔 *[GeMi 명함 - 신규 의뢰서 도착!]*\n\n" +
-                                   "🏢 *브랜드:* " + "릴라라" + "\n" +
-                                   "👤 *의뢰인:* " + name + "님\n" +
-                                   "📞 *연락처:* " + phone + "\n" +
-                                   "🏷️ *문의유형:* " + type + "\n" +
-                                   "💬 *의뢰내용:* " + desc;
+                    const messageText = "🚨 *[GeMi 명함 - 신규 의뢰서 접수!]*\n\n" +
+                                        "🏢 *브랜드:* " + extractedBrand + "\n" +
+                                        "👤 *의뢰인:* " + name + "님\n" +
+                                        "📞 *연락처:* " + phone + "\n" +
+                                        "🏷️ *문의유형:* " + type + "\n" +
+                                        "💬 *의뢰내용:* " + desc;
 
+                    // 브라우저가 직접 텔레그램 API 서버로 직접 연사 격발
                     await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ chat_id: chatId, text: tgText, parse_mode: "Markdown" })
-                    }).catch(e => console.log("TG 무전 통신 자체 지연 패스", e));
+                        body: JSON.stringify({ chat_id: chatId, text: messageText, parse_mode: "Markdown" })
+                    });
 
                     alert("✨ 의뢰서가 성공적으로 접수되었습니다! 디렉터 장형규가 신속히 연락드리겠습니다.");
                     
