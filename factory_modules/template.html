@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${user_name} - ${brand_name}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #121314;
+            background: radial-gradient(circle at center, #1f2124 0%, #0f1011 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 메인 카드 레이아웃 */
+        .centered-card {
+            width: 100%;
+            max-width: 420px;
+            height: calc(100vh - 40px);
+            max-height: 840px;
+            background-color: #1a1c1e;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 380px;
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
+            flex-shrink: 0;
+        }
+
+        .card-content-wrapper {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, #1a1c1e 0%, #141517 100%);
+        }
+
+        /* 💬 우측 하단 고정 챗봇 버튼 및 컨테이너 */
+        .floating-chat-widget {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        /* 💡 챗봇 아이콘 버튼 */
+        .chat-toggle-btn {
+            width: 52px;
+            height: 52px;
+            background-color: #ffffff;
+            color: #0c0d0e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 2px solid #3b82f6;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+
+        .chat-toggle-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 🎨 챗봇 대화창 */
+        .chat-window {
+            width: 320px;
+            height: 420px;
+            background: #191b1d;
+            border: 2px solid #3b82f6;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .widget-msg-zone {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .widget-msg-zone::-webkit-scrollbar { width: 4px; }
+        .widget-msg-zone::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+        /* 서브 페이지 전용 스크롤바 바인딩 */
+        .sub-page-content::-webkit-scrollbar { width: 4px; }
+        .sub-page-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased font-sans text-stone-200">
+
+    <div class="centered-card">
+        
+        <div id="mainPage" class="w-full h-full flex flex-col justify-between">
+            <div class="card-image-wrapper">
+                <img src="${main_image_url}" alt="Profile Image" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
+            </div>
+
+            <div class="card-content-wrapper">
+                <div class="text-center pt-4">
+                    <h1 class="text-3xl font-bold tracking-tight text-white mb-1.5">${user_name}</h1>
+                    <p class="text-xs text-stone-400 font-semibold tracking-widest uppercase mb-4">${brand_name}</p>
+                    <p class="text-xs text-stone-300 leading-relaxed max-w-[85%] mx-auto">
+                        ${INTRODUCTION}
+                    </p>
+                </div>
+
+                <div class="space-y-3 w-full pb-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="${INSTAGRAM}" target="_blank" style="${INSTAGRAM_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-3 rounded-xl border border-stone-700/50 transition-all">
+                            Instagram
+                        </a>
+                        <a href="${NAVER_BLOG}" target="_blank" style="${BLOG_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-3 rounded-xl border border-stone-700/50 transition-all">
+                            Naver Blog
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="switchPage('promoPage')" class="block w-full bg-stone-800 hover:bg-stone-700 text-stone-200 text-center font-bold text-xs py-3.5 rounded-xl border border-stone-700/50 shadow-lg transition-all tracking-wider uppercase">
+                            PORTFOLIO VIEW
+                        </button>
+                        <button onclick="switchPage('contactPage')" class="block w-full bg-white hover:bg-stone-200 text-stone-950 text-center font-bold text-xs py-3.5 rounded-xl shadow-lg transition-all tracking-wider uppercase">
+                            GET IN TOUCH
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="promoPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
+            <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-[#1a1c1e] flex-shrink-0">
+                <span class="text-sm font-bold tracking-wider text-white">PORTFOLIO</span>
+                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400 hover:text-white transition-all flex items-center gap-1">
+                    ← BACK
+                </button>
+            </div>
+            
+            <div class="sub-page-content flex-1 overflow-y-auto p-5 space-y-6">
+                <div class="space-y-2">
+                    <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">${brand_name} Project</p>
+                    <h2 class="text-xl font-bold text-white tracking-tight">차분함과 미니멀리즘</h2>
+                    <p class="text-xs text-stone-400 leading-relaxed">
+                        본질에 집중한 시각적 밸런스를 통해 브랜드의 가치를 시각화합니다. 감각적인 레이아웃과 톤앤매너 디자인 자산을 확인해보세요.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="space-y-3">
+                        <div class="bg-stone-900 rounded-xl overflow-hidden border border-white/5 group shadow-md">
+                            <img src="${SUB_IMAGE_URL_1}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe'" class="w-full h-44 object-cover transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <div class="bg-stone-900 rounded-xl overflow-hidden border border-white/5 group shadow-md">
+                            <img src="${SUB_IMAGE_URL_3}" onerror="this.src='https://images.unsplash.com/photo-1600585154340-be6161a56a0c'" class="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                    </div>
+                    <div class="space-y-3 pt-6">
+                        <div class="bg-stone-900 rounded-xl overflow-hidden border border-white/5 group shadow-md">
+                            <img src="${SUB_IMAGE_URL_2}" onerror="this.src='https://images.unsplash.com/photo-1513694203232-719a280e022f'" class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <div class="bg-stone-900 rounded-xl overflow-hidden border border-white/5 group shadow-md">
+                            <img src="${SUB_IMAGE_URL_4}" onerror="this.src='https://images.unsplash.com/photo-1486406146926-c627a92ad1ab'" class="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="contactPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
+            <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-[#1a1c1e] flex-shrink-0">
+                <span class="text-sm font-bold tracking-wider text-white">GET IN TOUCH</span>
+                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400 hover:text-white transition-all flex items-center gap-1">
+                    ← BACK
+                </button>
+            </div>
+            
+            <div class="sub-page-content flex-1 overflow-y-auto p-5 space-y-5">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-bold text-white tracking-tight">프로젝트 의뢰 및 협업 문의</h2>
+                    <p class="text-xs text-stone-400 leading-relaxed">내용을 남겨주시면 디렉터 ${user_name}가 확인 후 신속히 연락드리겠습니다.</p>
+                </div>
+
+                <div class="space-y-4 pt-2 text-xs">
+                    <div class="space-y-1.5">
+                        <label class="block text-stone-400 font-medium">성함 / 기업명</label>
+                        <input type="text" id="formClientName" placeholder="예: 홍길동" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-stone-400 font-medium">연락처</label>
+                        <input type="text" id="formClientPhone" placeholder="예: 010-0000-0000" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-stone-400 font-medium">프로젝트 유형</label>
+                        <select id="formProjectType" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-stone-300 focus:outline-none focus:border-blue-500 transition-all">
+                            <option value="브랜딩 및 로고 디자인">브랜딩 및 로고 디자인</option>
+                            <option value="패키지 / 상세페이지">패키지 / 상세페이지 제품 디자인</option>
+                            <option value="웹 / 모바일 웹명함 구축">웹 / 모바일 웹명함 구축</option>
+                            <option value="기타 협업 제안">기타 비즈니스 협업 제안</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-stone-400 font-medium">문의 및 요청사항 상세</label>
+                        <textarea id="formProjectDesc" rows="4" placeholder="컨셉, 일정, 예산 등을 자유롭게 적어주세요." class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all resize-none leading-relaxed"></textarea>
+                    </div>
+
+                    <button onclick="submitEstimate()" class="w-full bg-white text-stone-950 font-bold text-xs py-3.5 rounded-xl shadow-lg hover:bg-stone-200 transition-all uppercase tracking-wider mt-2">
+                        SUBMIT REQUEST
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="floating-chat-widget">
+            <button id="chatToggleBtn" class="chat-toggle-btn focus:outline-none">
+                <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                <svg id="chatIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                </svg>
+            </button>
+
+            <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0 flex-col">
+                <div class="bg-blue-900/60 px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                    <span class="text-xs font-bold text-white">✨ ${user_name} AI Assistant</span>
+                    <span class="text-[10px] text-blue-300 bg-blue-950 px-2 py-0.5 rounded-full font-medium">실시간 응대</span>
+                </div>
+
+                <div id="widgetMsgZone" class="widget-msg-zone">
+                    <div class="bg-stone-800 text-stone-200 text-xs p-3.5 rounded-xl rounded-tl-none max-w-[90%] leading-relaxed border border-stone-700/50">
+                        안녕하세요! <strong>${user_name}</strong> 디렉터의 AI 비서입니다. 
+                        아래 <strong>[자주 묻는 질문 버튼]</strong>을 누르시면 준비된 답변을 바로 확인하실 수 있습니다! 👇
+                    </div>
+                    
+                    <div id="faqBtnArea" class="flex flex-col gap-2 pt-1">
+                        <button onclick="handleFaq(1)" class="w-full text-left bg-white/5 hover:bg-white/10 text-stone-200 text-xs px-3.5 py-2.5 rounded-xl border border-stone-700/60 transition-all leading-snug">
+                            🔹 ${question_1}
+                        </button>
+                        <button onclick="handleFaq(2)" class="w-full text-left bg-white/5 hover:bg-white/10 text-stone-200 text-xs px-3.5 py-2.5 rounded-xl border border-stone-700/60 transition-all leading-snug">
+                            🔹 ${question_2}
+                        </button>
+                        <button onclick="handleFaq(3)" class="w-full text-left bg-white/5 hover:bg-white/10 text-stone-200 text-xs px-3.5 py-2.5 rounded-xl border border-stone-700/60 transition-all leading-snug">
+                            🔹 ${question_3}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-stone-900/90 border-t border-white/5 flex gap-2">
+                    <input type="text" id="widgetInput" placeholder="기타 문의사항을 입력하세요..." class="flex-1 bg-stone-800 text-xs text-white placeholder-stone-500 rounded-xl px-3 focus:outline-none focus:border-blue-500/50 border border-stone-700/50">
+                    <button id="widgetSendBtn" class="bg-blue-600 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-blue-500 transition-all">전송</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. 싱글 페이지(SPA) 탭 체인저 기능
+        function switchPage(pageId) {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('promoPage').classList.add('hidden');
+            document.getElementById('contactPage').classList.add('hidden');
+            
+            document.getElementById(pageId).classList.remove('hidden');
+            document.getElementById('chatWindow').classList.add('hidden');
+        }
+
+        // 2. 챗봇 가젯 토글 및 연동 로직
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        const chatWindow = document.getElementById('chatWindow');
+        const widgetMsgZone = document.getElementById('widgetMsgZone');
+        const widgetInput = document.getElementById('widgetInput');
+        const widgetSendBtn = document.getElementById('widgetSendBtn');
+
+        chatToggleBtn.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+        });
+
+        const faqData = {
+            1: { q: "${question_1}", a: "${answer_1}" },
+            2: { q: "${question_2}", a: "${answer_2}" },
+            3: { q: "${question_3}", a: "${answer_3}" }
+        };
+
+        function handleFaq(num) {
+            const target = faqData[num];
+            if (!target || !target.q) return;
+
+            appendMessage('user', target.q);
+            
+            setTimeout(() => {
+                appendMessage('bot', target.a);
+            }, 300);
+        }
+
+        function appendMessage(sender, message) {
+            let msgHtml = "";
+            if(sender === 'user') {
+                msgHtml = `
+                    <div class="flex flex-col items-end w-full">
+                        <div class="bg-blue-600 text-white text-xs px-3.5 py-2 rounded-xl rounded-tr-none max-w-[85%] font-medium shadow-md">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+            } else {
+                msgHtml = `
+                    <div class="flex flex-col items-start w-full">
+                        <span class="text-[10px] text-stone-500 mb-0.5 pl-0.5">${user_name} Bot</span>
+                        <div class="bg-stone-800 text-stone-200 text-xs px-3.5 py-2.5 rounded-xl rounded-tl-none max-w-[85%] leading-relaxed border border-stone-700/50 shadow-sm">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+            }
+            widgetMsgZone.insertAdjacentHTML('beforeend', msgHtml);
+            widgetMsgZone.scrollTop = widgetMsgZone.scrollHeight;
+        }
+
+        async function sendAiMessage() {
+            const text = widgetInput.value.trim();
+            if(!text) return;
+
+            appendMessage('user', text);
+            widgetInput.value = '';
+
+            const loadingId = 'load-' + Date.now();
+            const loadingHtml = `<div id="${loadingId}" class="bg-stone-800/50 text-stone-400 text-xs p-2.5 rounded-xl rounded-tl-none max-w-[70%] animate-pulse border border-stone-700/30">생각 중...</div>`;
+            widgetMsgZone.insertAdjacentHTML('beforeend', loadingHtml);
+            widgetMsgZone.scrollTop = widgetMsgZone.scrollHeight;
+
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer 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",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "model": "google/gemini-2.5-flash",
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": "너는 브랜드 디자이너 '${user_name}'의 전문 AI 비서야. 브랜드 이름은 '${brand_name}'이며, 사용자의 기타 질문에 대해 신뢰감 있고 친절하게 2~3줄 이내로 답변해줘."
+                            },
+                            { "role": "user", "content": text }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const aiReply = data.choices[0].message.content;
+
+                document.getElementById(loadingId).remove();
+                appendMessage('bot', aiReply);
+
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                appendMessage('bot', "현재 통신이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+            }
+        }
+
+        widgetSendBtn.addEventListener('click', sendAiMessage);
+        widgetInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
+
+
+        // 3. 📬 견적서 폼 데이터 로그 출력부
+        function submitEstimate() {
+            const name = document.getElementById('formClientName').value.trim();
+            const phone = document.getElementById('formClientPhone').value.trim();
+            const type = document.getElementById('formProjectType').value;
+            const desc = document.getElementById('formProjectDesc').value.trim();
+
+            if(!name || !phone || !desc) {
+                alert("의뢰인 성함, 연락처, 상세 요청사항을 모두 입력해 주세요.");
+                return;
+            }
+
+            console.log("제출된 문의 데이터:", { name, phone, type, desc });
+            alert("✨ 프로젝트 문의가 성공적으로 접수되었습니다. 디렉터 ${user_name}가 신속히 검토 후 연락드리겠습니다.");
+            
+            document.getElementById('formClientName').value = '';
+            document.getElementById('formClientPhone').value = '';
+            document.getElementById('formProjectDesc').value = '';
+            switchPage('mainPage');
+        }
+    </script>
+</body>
+</html>
