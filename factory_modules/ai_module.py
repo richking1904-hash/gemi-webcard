@@ -17,7 +17,6 @@ def generate_webcard_code(gui_payload: dict) -> str:
     design_preference = gui_payload.get("design_preference", {})
     ai_custom_requests = gui_payload.get("ai_custom_requests", {})
 
-    # 🎯 꼬여있던 대표 이미지 수집 파이프라인 완벽 청소
     main_image_url = gui_payload.get("main_image_url", "")
     other_image_urls = gui_payload.get("other_image_urls", [])
     
@@ -52,16 +51,16 @@ def generate_webcard_code(gui_payload: dict) -> str:
     rendered_code = rendered_code.replace("${DIRECTOR_NAME}", director_name)
     rendered_code = rendered_code.replace("${INTRODUCTION}", refined_intro)
     
-    # 📸 대소문자 엑박 억까 방어벽 수립
     default_img = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe"
     final_img_url = main_image_url if main_image_url else default_img
     rendered_code = rendered_code.replace("${main_image_url}", final_img_url)
     rendered_code = rendered_code.replace("${MAIN_IMAGE_URL}", final_img_url)
-    rendered_code = rendered_code.replace("${PROFILE_IMAGE_URL}", final_img_url)
     
-    for i, img_url in enumerate(other_image_urls):
+    for i in range(4):
+        img_url = other_image_urls[i] if i < len(other_image_urls) else default_img
         rendered_code = rendered_code.replace(f"${{SUB_IMAGE_URL_{i+1}}}", img_url)
 
+    # 📱 연락처 정보 치환 (전화번호와 이메일 주소 모두 정상 바인딩)
     rendered_code = rendered_code.replace("${PHONE}", contact_info.get("phone", ""))
     rendered_code = rendered_code.replace("${EMAIL}", contact_info.get("email", ""))
     rendered_code = rendered_code.replace("${INSTAGRAM}", contact_info.get("instagram", ""))
@@ -81,7 +80,6 @@ def generate_webcard_code(gui_payload: dict) -> str:
 
 def get_chatbot_response(gui_payload: dict, question: str) -> str:
     user_info = gui_payload.get("user_info", {})
-    contact_info = gui_payload.get("contact_info", {})
     faq_info = gui_payload.get("faq_info", {})
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")

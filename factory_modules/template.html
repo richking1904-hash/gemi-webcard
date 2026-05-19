@@ -18,6 +18,10 @@
         .widget-msg-zone::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .sub-page-content::-webkit-scrollbar { width: 4px; }
         .sub-page-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        
+        .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+        .smart-grid button:nth-child(1):nth-last-child(3) { grid-column: span 2 / span 2; py: 4px; font-weight: 800; background-color: #ffffff; color: #0c0d0e; }
+        .smart-grid button:nth-child(1):nth-last-child(3):hover { background-color: #e5e7eb; }
     </style>
 </head>
 <body class="antialiased font-sans text-stone-200">
@@ -29,19 +33,33 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
             </div>
             <div class="card-content-wrapper">
-                <div class="text-center pt-4">
+                <div class="text-center pt-2">
                     <h1 class="text-3xl font-bold tracking-tight text-white mb-1.5">${user_name}</h1>
-                    <p class="text-xs text-stone-400 font-semibold tracking-widest uppercase mb-4">${brand_name}</p>
+                    <p class="text-xs text-stone-400 font-semibold tracking-widest uppercase mb-3">${brand_name}</p>
                     <p class="text-xs text-stone-300 leading-relaxed max-w-[85%] mx-auto">${INTRODUCTION}</p>
                 </div>
-                <div class="space-y-3 w-full pb-4">
+
+                <div class="w-full flex flex-col items-center justify-center py-2.5 my-1 border-y border-white/5 bg-white/[0.01] space-y-2">
+                    <a href="tel:${PHONE}" class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-stone-800 border border-white/10 hover:bg-blue-600 hover:border-blue-500 transition-all group">
+                        <span class="text-xs">📞</span>
+                        <span class="text-[10px] tracking-widest font-bold text-stone-300 group-hover:text-white transition-all uppercase">DIRECT CALL</span>
+                    </a>
+                    
+                    <div class="flex items-center gap-1.5 text-stone-400 cursor-default select-all">
+                        <span class="text-xs opacity-70">✉️</span>
+                        <span class="text-[11px] font-medium tracking-wide font-mono">${EMAIL}</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 w-full pb-2">
                     <div class="grid grid-cols-2 gap-2">
                         <a href="${INSTAGRAM}" target="_blank" style="${INSTAGRAM_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-3 rounded-xl border border-stone-700/50 transition-all">Instagram</a>
                         <a href="${NAVER_BLOG}" target="_blank" style="${BLOG_DISPLAY}" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-3 rounded-xl border border-stone-700/50 transition-all">Naver Blog</a>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="switchPage('promoPage')" class="block w-full bg-stone-800 hover:bg-stone-700 text-stone-200 text-center font-bold text-xs py-3.5 rounded-xl border border-stone-700/50 shadow-lg transition-all tracking-wider uppercase">PORTFOLIO VIEW</button>
-                        <button onclick="switchPage('contactPage')" class="block w-full bg-white hover:bg-stone-200 text-stone-950 text-center font-bold text-xs py-3.5 rounded-xl shadow-lg transition-all tracking-wider uppercase">GET IN TOUCH</button>
+                    
+                    <div class="smart-grid">
+                        <button onclick="switchPage('promoPage')" class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-center font-bold text-xs py-3.5 rounded-xl border border-stone-700/50 shadow-lg transition-all tracking-wider uppercase">PORTFOLIO VIEW</button>
+                        <button onclick="switchPage('contactPage')" class="bg-white hover:bg-stone-200 text-stone-950 text-center font-bold text-xs py-3.5 rounded-xl shadow-lg transition-all tracking-wider uppercase">GET IN TOUCH</button>
                     </div>
                 </div>
             </div>
@@ -145,7 +163,6 @@
         document.getElementById('widgetSendBtn').addEventListener('click', sendAiMessage);
         document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
 
-        // 🎯 [파이썬 치환 엔진 간섭 원천 차단 완벽 패치 버전]
         async function submitEstimate() {
             const name = document.getElementById('formClientName').value.trim();
             const phone = document.getElementById('formClientPhone').value.trim();
@@ -158,7 +175,6 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
-            // 💡 상단 <title> 태그에 구워진 글자에서 안전하게 브랜드명을 역추출하여 파이썬 간섭을 완벽하게 우회합니다.
             const extractedBrand = document.title.includes(' - ') ? document.title.split(' - ')[1] : "GeMi";
 
             const dbPayload = {
@@ -170,7 +186,6 @@
             };
             
             try {
-                // 📡 1단계: Supabase 실시간 백업 적재 (여긴 파이썬 변수가 없어서 무조건 성공함)
                 const res = await fetch(S_URL + "/rest/v1/gemi_customer_inquiry", {
                     method: "POST",
                     headers: {
@@ -183,7 +198,6 @@
                 });
 
                 if(res.ok) {
-                    // 📡 2단계: 파이썬의 문자열 치환 엔진이 가로채지 못하도록 글자를 완전히 쪼개서 조립한 텔레그램 탄도 미사일
                     const part1 = "8634715913";
                     const part2 = "AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
                     const botToken = part1 + ":" + part2;
@@ -196,12 +210,11 @@
                                         "🏷️ *문의유형:* " + type + "\n" +
                                         "💬 *의뢰내용:* " + desc;
 
-                    // 브라우저가 직접 텔레그램 API 서버로 직접 연사 격발
                     await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ chat_id: chatId, text: messageText, parse_mode: "Markdown" })
-                    });
+                    }).catch(e => console.log(e));
 
                     alert("✨ 의뢰서가 성공적으로 접수되었습니다! 디렉터 장형규가 신속히 연락드리겠습니다.");
                     
@@ -213,7 +226,6 @@
                     alert("서버 통신 장부 저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
                 }
             } catch (e) { 
-                console.error("Network Error:", e);
                 alert("네트워크 연결에 실패했습니다.");
             } finally {
                 btn.disabled = false;
