@@ -3,124 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장형규 - gemi</title>
+    <title>장형규 - ge</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;1,700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #121314; background: radial-gradient(circle at center, #1f2124 0%, #0f1011 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 15px; }
-        .centered-card { width: 100%; max-width: 410px; height: calc(100vh - 30px); max-height: 820px; background-color: #1a1c1e; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6); overflow: hidden; display: flex; flex-direction: column; position: relative; }
-        .card-image-wrapper { width: 100%; height: 360px; position: relative; overflow: hidden; background-color: #111; flex-shrink: 0; }
-        .card-content-wrapper { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, #1a1c1e 0%, #141517 100%); }
-        .floating-chat-widget { position: absolute; bottom: 20px; right: 20px; z-index: 100; }
-        .chat-toggle-btn { width: 50px; height: 50px; background-color: #ffffff; color: #0c0d0e; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid #3b82f6; cursor: pointer; }
-        .chat-window { width: 310px; height: 400px; background: #191b1d; border: 2px solid #3b82f6; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; }
-        .widget-msg-zone { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-        .sub-page-content { flex: 1; overflow-y: auto; padding: 20px; }
-        .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+        :root { --gold: #C5A059; --dark-bg: #121314; }
+        body { background-color: var(--dark-bg); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 15px; }
+        .serif { font-family: 'Bodoni Moda', serif; }
+        .centered-card { width: 100%; max-width: 410px; height: calc(100vh - 30px); max-height: 820px; background-color: #1a1c1e; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        .card-image-wrapper { width: 100%; height: 42%; position: relative; overflow: hidden; flex-shrink: 0; }
+        .card-content-wrapper { flex: 1; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(180deg, #1a1c1e 0%, #0c0d0e 100%); }
+        .sub-page-content { flex: 1; overflow-y: auto; padding: 24px; background: #0c0d0e; }
+        .sub-page-content::-webkit-scrollbar { width: 3px; }
+        .sub-page-content::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+        .floating-chat-widget { position: absolute; bottom: 24px; right: 24px; z-index: 100; }
+        .chat-toggle-btn { width: 56px; height: 56px; background-color: #ffffff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid var(--gold); cursor: pointer; transition: 0.3s; }
+        .chat-toggle-btn:hover { transform: scale(1.1); }
+        .chat-window { width: 320px; height: 450px; background: #191b1d; border: 1px solid var(--gold); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden; }
+        .widget-msg-zone { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
         .hidden { display: none !important; }
+        input, textarea, select { background: #1a1c1e !important; border: 1px solid #333 !important; color: white !important; border-radius: 12px !important; padding: 12px !important; width: 100%; outline: none; }
+        input:focus { border-color: var(--gold) !important; }
+        .gold-btn { background: var(--gold); color: #000; font-weight: 700; border-radius: 14px; padding: 14px; width: 100%; transition: 0.3s; }
+        .gold-btn:hover { background: #b08d4a; }
     </style>
 </head>
 <body class="antialiased font-sans text-stone-200">
     <div class="centered-card">
         <div id="mainPage" class="w-full h-full flex flex-col">
             <div class="card-image-wrapper">
-                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T223121.550_1779240870.png" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
+                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T213701.991_1779241209.png" class="w-full h-full object-cover grayscale-[20%]">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] to-transparent"></div>
             </div>
             <div class="card-content-wrapper">
                 <div class="text-center">
-                    <h1 class="text-2xl font-bold text-white mb-1">장형규</h1>
-                    <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-2.5">gemi</p>
-                    <p class="text-xs text-stone-300 leading-relaxed"></p>
+                    <h1 class="text-3xl font-bold tracking-tight text-white mb-1 serif italic">장형규</h1>
+                    <p class="text-[10px] text-[#C5A059] font-bold uppercase tracking-[4px] mb-4">ge</p>
+                    <div class="w-8 h-[1px] bg-[#C5A059] mx-auto mb-4"></div>
+                    <p class="text-xs text-stone-300 leading-relaxed max-w-[90%] mx-auto font-light"></p>
                 </div>
-                <div class="smart-grid">
-                    <button onclick="switchPage('promoPage')" class="bg-stone-800 py-3 rounded-xl font-bold text-[11px]">PORTFOLIO</button>
-                    <button onclick="switchPage('contactPage')" class="bg-white text-stone-950 py-3 rounded-xl font-bold text-[11px]">GET IN TOUCH</button>
+                <div class="smart-grid mt-6">
+                    <button onclick="switchPage('promoPage')" class="bg-stone-800 text-stone-200 font-bold text-[11px] py-4 rounded-2xl border border-white/5 tracking-widest uppercase">Portfolio</button>
+                    <button onclick="switchPage('contactPage')" class="gold-btn text-[11px] py-4 tracking-widest uppercase shadow-xl">Contact</button>
                 </div>
             </div>
         </div>
 
-        <div id="promoPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
-            <div class="px-5 py-4 border-b border-white/5 bg-[#1a1c1e] flex justify-between items-center">
-                <span class="text-sm font-bold text-white">PORTFOLIO</span>
-                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400">← BACK</button>
+        <div id="promoPage" class="hidden w-full h-full flex flex-col">
+            <div class="px-6 py-5 border-b border-white/5 bg-[#1a1c1e] flex justify-between items-center">
+                <span class="text-xs font-bold tracking-[3px] text-[#C5A059] serif uppercase">Selected Pieces</span>
+                <button onclick="switchPage('mainPage')" class="text-[10px] text-stone-500 hover:text-white uppercase tracking-wider">Close</button>
             </div>
             <div class="sub-page-content">
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="space-y-3"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T223107.471_1779240869.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T223220.713_1779240871.png" class="rounded-xl shadow-md"></div>
-                    <div class="space-y-3 pt-6"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T223201.309_1779240870.png" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-15T223306.404_1779240871.png" class="rounded-xl shadow-md"></div>
+                <p class="text-[10px] text-stone-500 mb-6 tracking-widest leading-loose uppercase">GeMi Design Studio - Premium Branding Identity Portfolio</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T215313.805_1779241210.png" class="rounded-2xl border border-white/5 hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                        <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T234736.148_1779241211.png" class="rounded-2xl border border-white/5 hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T234701.105_1779241210.png" class="rounded-2xl border border-white/5 hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                        <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/Image_fx - 2026-01-22T234919.128_1779241211.png" class="rounded-2xl border border-white/5 hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                    </div>
+                </div>
+                <div class="mt-12 text-center pb-10">
+                    <p class="text-[9px] text-stone-600 tracking-widest">© 2024 GeMi WebCard. All Rights Reserved.</p>
                 </div>
             </div>
         </div>
 
-        <div id="contactPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
-            <div class="px-5 py-4 border-b border-white/5 bg-[#1a1c1e] flex justify-between items-center">
-                <span class="text-sm font-bold text-white">GET IN TOUCH</span>
-                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400">← BACK</button>
+        <div id="contactPage" class="hidden w-full h-full flex flex-col">
+            <div class="px-6 py-5 border-b border-white/5 bg-[#1a1c1e] flex justify-between items-center">
+                <span class="text-xs font-bold tracking-[3px] text-[#C5A059] serif uppercase">Consultation</span>
+                <button onclick="switchPage('mainPage')" class="text-[10px] text-stone-500 hover:text-white uppercase tracking-wider">Close</button>
             </div>
-            <div class="sub-page-content space-y-4 text-xs">
-                <div class="space-y-1.5"><label class="text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
-                <div class="space-y-1.5"><label class="text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
-                <div class="space-y-1.5"><label class="text-stone-400">문의 상세내용</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></textarea></div>
-                <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl uppercase">SUBMIT REQUEST</button>
+            <div class="sub-page-content space-y-5">
+                <div>
+                    <h2 class="text-xl font-bold text-white serif italic mb-1">Project Brief</h2>
+                    <p class="text-[10px] text-stone-500 tracking-wider">성공적인 협업을 위한 프로젝트 정보를 입력해주세요.</p>
+                </div>
+                <div class="space-y-4 pt-2">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-stone-400 uppercase tracking-widest">Name / Brand</label>
+                        <input type="text" id="formClientName" placeholder="성함 또는 기업명을 입력하세요">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-stone-400 uppercase tracking-widest">Contact</label>
+                        <input type="text" id="formClientPhone" placeholder="010-0000-0000">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-stone-400 uppercase tracking-widest">Project Type</label>
+                        <select id="formProjectType">
+                            <option value="브랜딩">프리미엄 브랜딩</option>
+                            <option value="상세페이지">상세페이지 디자인</option>
+                            <option value="패키지">패키지 / 로고 디자인</option>
+                            <option value="기타">기타 협업 문의</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-stone-400 uppercase tracking-widest">Budget Range</label>
+                        <select id="formBudget">
+                            <option value="100-300">100만원 - 300만원</option>
+                            <option value="300-500">300만원 - 500만원</option>
+                            <option value="500+">500만원 이상</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-stone-400 uppercase tracking-widest">Details</label>
+                        <textarea id="formProjectDesc" rows="3" placeholder="프로젝트 목표 및 요청사항을 기술해주세요."></textarea>
+                    </div>
+                    <button onclick="submitEstimate()" id="submitBtn" class="gold-btn mt-4 shadow-[0_10px_30px_rgba(197,160,89,0.3)]">SUBMIT BRIEF</button>
+                </div>
             </div>
         </div>
 
         <div class="floating-chat-widget">
-            <button id="chatToggleBtn" class="chat-toggle-btn">💬</button>
-            <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0">
-                <div id="widgetMsgZone" class="widget-msg-zone"><div class="bg-stone-800 p-3 rounded-xl text-xs">안녕하세요!</div></div>
-                <div class="p-3 bg-stone-900 flex gap-2">
-                    <input type="text" id="widgetInput" class="flex-1 bg-stone-800 text-white text-xs px-2 rounded">
-                    <button onclick="sendAiMessage()" class="bg-blue-600 text-white text-xs px-3 rounded">전송</button>
+            <button id="chatToggleBtn" class="chat-toggle-btn text-xl shadow-2xl">💬</button>
+            <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0 flex-col">
+                <div class="bg-[#C5A059] px-4 py-3 flex justify-between items-center text-black font-bold text-[10px] tracking-widest uppercase">
+                    <span>✨ GeMi AI Assistant</span>
+                </div>
+                <div id="widgetMsgZone" class="widget-msg-zone bg-[#1a1c1e]">
+                    <div class="bg-stone-800 p-3.5 rounded-2xl text-[11px] text-stone-200 leading-relaxed shadow-lg">안녕하세요. GeMi AI 비서입니다. 가이드라인에 기반하여 무엇이든 답변해 드립니다.</div>
+                </div>
+                <div class="p-4 bg-[#0c0d0e] flex gap-2 border-t border-white/5">
+                    <input type="text" id="widgetInput" class="flex-1 text-[11px]" placeholder="Ask anything...">
+                    <button onclick="sendAiMessage()" class="bg-[#C5A059] text-black text-[11px] font-bold px-4 rounded-xl">전송</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // 👑 [시스템] 안전한 Base64 디코딩
         const encodedData = "error";
-        const G_TXT = (encodedData === "error") ? "정보 없음" : atob(encodedData);
-        const API_KEY = "OPENROUTER_API_KEY_HERE";
+        let G_TXT = "가이드라인 정보가 없습니다.";
+        try {
+            if(encodedData && encodedData !== "error") G_TXT = atob(encodedData);
+        } catch(e) { console.error("Decoding error", e); }
 
-        function switchPage(p) {
+        const API_KEY = "OPENROUTER_API_KEY_PLACEHOLDER"; // Vercel 환경변수에서 관리
+
+        function switchPage(pageId) {
             ['mainPage', 'promoPage', 'contactPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(p).classList.remove('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+            document.getElementById('chatWindow').classList.add('hidden');
         }
-        
-        document.getElementById('chatToggleBtn').addEventListener('click', () => document.getElementById('chatWindow').classList.toggle('hidden'));
+
+        document.getElementById('chatToggleBtn').addEventListener('click', () => {
+            document.getElementById('chatWindow').classList.toggle('hidden');
+        });
 
         async function submitEstimate() {
             const btn = document.getElementById('submitBtn');
             const data = {
-                name: document.getElementById('formClientName').value,
-                phone: document.getElementById('formClientPhone').value,
-                desc: document.getElementById('formProjectDesc').value
+                name: document.getElementById('formClientName').value.trim(),
+                phone: document.getElementById('formClientPhone').value.trim(),
+                type: document.getElementById('formProjectType').value,
+                budget: document.getElementById('formBudget').value,
+                desc: document.getElementById('formProjectDesc').value.trim()
             };
-            btn.innerText = "SENDING...";
-            // 슈파베이스 저장 및 텔레그램 연동 로직
-            await fetch("https://bjbpjkeahkupmeuvfwys.supabase.co/rest/v1/gemi_customer_inquiry", {
-                method: "POST",
-                headers: { "apikey": "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Authorization": "Bearer sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Content-Type": "application/json" },
-                body: JSON.stringify({ customer_name: data.name, customer_contact: data.phone, message: data.desc })
-            });
-            await fetch("https://api.telegram.org/bot8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE/sendMessage", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: "859745575", text: `신규 의뢰: ${data.name}\n${data.phone}\n${data.desc}` })
-            });
-            alert("접수 완료!");
-            btn.innerText = "SUBMIT REQUEST";
+
+            if(!data.name || !data.phone) { alert("이름과 연락처는 필수입니다."); return; }
+
+            btn.disabled = true; btn.innerText = "SENDING...";
+
+            try {
+                // 1. 슈파베이스 저장
+                await fetch("https://bjbpjkeahkupmeuvfwys.supabase.co/rest/v1/gemi_customer_inquiry", {
+                    method: "POST",
+                    headers: { "apikey": "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Authorization": "Bearer sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        customer_name: data.name, 
+                        customer_contact: data.phone, 
+                        inquiry_type: data.type,
+                        message: `[예산: ${data.budget}] ${data.desc}` 
+                    })
+                });
+
+                // 2. 텔레그램 알림
+                const text = `🚨 *[신규 견적 요청]*\n\n👤 *의뢰인:* ${data.name}\n📞 *연락처:* ${data.phone}\n🏷️ *분야:* ${data.type}\n💰 *예산:* ${data.budget}\n💬 *내용:* ${data.desc}`;
+                await fetch("https://api.telegram.org/bot8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE/sendMessage", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: "859745575", text: text, parse_mode: "Markdown" })
+                });
+
+                alert("의뢰서가 전송되었습니다. 검토 후 연락드리겠습니다.");
+                switchPage('mainPage');
+            } catch(e) { alert("오류가 발생했습니다."); }
+            finally { btn.disabled = false; btn.innerText = "SUBMIT BRIEF"; }
+        }
+
+        function appendMessage(sender, msg) {
+            const zone = document.getElementById('widgetMsgZone');
+            const align = sender === 'user' ? 'items-end' : 'items-start';
+            const color = sender === 'user' ? 'bg-[#C5A059] text-black' : 'bg-stone-800 text-white';
+            zone.insertAdjacentHTML('beforeend', `<div class="flex flex-col ${align} mb-2"><div class="${color} p-3 rounded-2xl text-[11px] max-w-[85%] shadow-md">${msg}</div></div>`);
+            zone.scrollTop = zone.scrollHeight;
         }
 
         async function sendAiMessage() {
             const input = document.getElementById('widgetInput');
             const text = input.value.trim();
             if(!text) return;
-            // 챗봇 메시지 추가 로직...
-            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="text-right text-xs bg-blue-600 p-2 rounded-xl text-white">${text}</div>`);
-            input.value = '';
-            // API 호출 로직...
+            appendMessage('user', text); input.value = '';
+
+            try {
+                const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Authorization": "Bearer " + API_KEY, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "google/gemini-2.0-flash-001",
+                        messages: [
+                            {"role": "system", "content": "너는 프리미엄 브랜드 GeMi의 지능형 비서야. 이 지침을 기반으로 대답해: " + G_TXT},
+                            {"role": "user", "content": text}
+                        ]
+                    })
+                });
+                const data = await res.json();
+                appendMessage('bot', data.choices[0].message.content);
+            } catch(e) { appendMessage('bot', "API 통신에 문제가 발생했습니다."); }
         }
+        
+        document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
     </script>
 </body>
 </html>
