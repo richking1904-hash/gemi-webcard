@@ -110,8 +110,23 @@
             alert("전송되었습니다!"); btn.innerText = "SUBMIT BRIEF"; switchPage('mainPage');
         }
         async function sendAiMessage() {
-            const input = document.getElementById('widgetInput'); const text = input.value.trim(); if(!text) return;
-            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-end mb-2"><div class="bg-[#C5A059] p-3 rounded-2xl text-[11px] text-black">${text}</div></div>`); input.value = '';
+            const input = document.getElementById('widgetInput');
+            const text = input.value.trim();
+            if(!text) return;
+            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-end mb-2"><div class="bg-[#C5A059] p-3 rounded-2xl text-[11px] text-black">${text}</div></div>`);
+            input.value = '';
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text + "\n\n[참고 가이드라인]: " + G_TXT })
+                });
+                const data = await response.json();
+                document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-start mb-2"><div class="bg-[#333] p-3 rounded-2xl text-[11px] text-white">${data.reply || data.error}</div></div>`);
+                document.getElementById('widgetMsgZone').scrollTop = document.getElementById('widgetMsgZone').scrollHeight;
+            } catch(e) {
+                document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="text-[10px] text-red-500">통신 실패</div>`);
+            }
         }
     </script>
 </body>
