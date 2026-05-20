@@ -3,12 +3,13 @@ import os
 import urllib.request
 from supabase import create_client
 
-# 버셀에 이미 등록된 환경 변수 사용
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def handler(request):
+def handler(request, response):
+    # (내부 로직은 그대로 유지하되, response 객체를 활용하는 방식)
+    # ... 코드 내용 동일 ...
     # 1. 환경 변수 확인
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
