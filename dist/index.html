@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이유정 - gei</title>
+    <title>장형규 - gemi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #121314; background: radial-gradient(circle at center, #1f2124 0%, #0f1011 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 15px; }
@@ -11,145 +11,54 @@
         .card-image-wrapper { width: 100%; height: 360px; position: relative; overflow: hidden; background-color: #111; flex-shrink: 0; }
         .card-content-wrapper { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, #1a1c1e 0%, #141517 100%); }
         .floating-chat-widget { position: absolute; bottom: 20px; right: 20px; z-index: 100; }
-        .chat-toggle-btn { width: 50px; height: 50px; background-color: #ffffff; color: #0c0d0e; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid #3b82f6; position: relative; }
+        .chat-toggle-btn { width: 50px; height: 50px; background-color: #ffffff; color: #0c0d0e; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid #3b82f6; }
         .chat-window { width: 310px; height: 400px; background: #191b1d; border: 2px solid #3b82f6; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; }
         .widget-msg-zone { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-        .widget-msg-zone::-webkit-scrollbar { width: 4px; }
-        .widget-msg-zone::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        .sub-page-content::-webkit-scrollbar { width: 4px; }
-        .sub-page-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        
         .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
-        .smart-grid button:nth-child(1):nth-last-child(3) { grid-column: span 2 / span 2; font-weight: 800; background-color: #ffffff; color: #0c0d0e; }
-        .smart-grid button:nth-child(1):nth-last-child(3):hover { background-color: #e5e7eb; }
     </style>
 </head>
 <body class="antialiased font-sans text-stone-200">
-
     <div class="centered-card">
         <div id="mainPage" class="w-full h-full flex flex-col justify-between">
             <div class="card-image-wrapper">
-                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a15_1779191497.jpg" alt="Profile Image" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
+                <img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a10_1779238021.jpg" alt="Profile Image" class="w-full h-full object-cover">
             </div>
             <div class="card-content-wrapper">
-                <div class="text-center pt-1">
-                    <h1 class="text-2xl font-bold tracking-tight text-white mb-1">이유정</h1>
-                    <p class="text-[10px] text-stone-400 font-semibold tracking-widest uppercase mb-2.5">gei</p>
-                    <p class="text-xs text-stone-300 leading-relaxed max-w-[88%] mx-auto"></p>
-                </div>
-
-                <div class="w-full flex items-center justify-between px-2 py-2 my-1 border-y border-white/5 bg-white/[0.005]">
-                    <a href="tel:" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-800 border border-white/10 hover:bg-blue-600 hover:border-blue-500 transition-all group">
-                        <span class="text-[11px]">📞</span>
-                        <span class="text-[9px] tracking-wider font-bold text-stone-300 group-hover:text-white transition-all uppercase">CALL</span>
-                    </a>
-                    <div class="flex items-center gap-1.5 text-stone-400 cursor-default select-all">
-                        <span class="text-[11px] opacity-60">✉️</span>
-                        <span class="text-[10px] font-medium tracking-wide font-mono"></span>
-                    </div>
-                </div>
-
-                <div class="space-y-2.5 w-full pb-1">
-                    <div class="grid grid-cols-2 gap-2">
-                        <a href="#" target="_blank" style="display: none !important;" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">Instagram</a>
-                        <a href="#" target="_blank" style="display: none !important;" class="bg-stone-800/90 hover:bg-stone-700 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50 transition-all">Naver Blog</a>
-                    </div>
-                    
-                    <div class="smart-grid">
-                        <button onclick="switchPage('promoPage')" class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-center font-bold text-[11px] py-3 rounded-xl border border-stone-700/50 shadow-lg transition-all tracking-wider uppercase">PORTFOLIO VIEW</button>
-                        <button onclick="switchPage('contactPage')" class="bg-white hover:bg-stone-200 text-stone-950 text-center font-bold text-[11px] py-3 rounded-xl shadow-lg transition-all tracking-wider uppercase">GET IN TOUCH</button>
-                    </div>
+                <h1 class="text-2xl font-bold text-white">장형규</h1>
+                <p class="text-[10px] text-stone-400 uppercase tracking-widest">gemi</p>
+                <p class="text-xs text-stone-300 leading-relaxed"></p>
+                <div class="smart-grid">
+                    <button onclick="switchPage('promoPage')" class="bg-stone-800 py-3 rounded-xl font-bold text-[11px]">PORTFOLIO</button>
+                    <button onclick="switchPage('contactPage')" class="bg-white text-stone-950 py-3 rounded-xl font-bold text-[11px]">GET IN TOUCH</button>
                 </div>
             </div>
         </div>
-
-        <div id="promoPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
-            <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-[#1a1c1e] flex-shrink-0">
-                <span class="text-sm font-bold tracking-wider text-white">PORTFOLIO</span>
-                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400 hover:text-white transition-all">← BACK</button>
-            </div>
-            <div class="sub-page-content flex-1 overflow-y-auto p-5">
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="space-y-3"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a9_1779191495.jpg" class="rounded-xl shadow-md"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a14_1779191497.jpg" class="rounded-xl shadow-md"></div>
-                    <div class="space-y-3 pt-6"><img src="https://bjbpjkeahkupmeuvfwys.supabase.co/storage/v1/object/public/gemi_assets/a10_1779191496.jpg" class="rounded-xl shadow-md"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe" class="rounded-xl shadow-md"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="contactPage" class="hidden w-full h-full flex flex-col bg-[#141517]">
-            <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-[#1a1c1e] flex-shrink-0">
-                <span class="text-sm font-bold tracking-wider text-white">GET IN TOUCH</span>
-                <button onclick="switchPage('mainPage')" class="text-xs text-stone-400 hover:text-white transition-all">← BACK</button>
-            </div>
-            <div class="sub-page-content flex-1 overflow-y-auto p-5 space-y-5 text-xs">
-                <h2 class="text-lg font-bold text-white tracking-tight">프로젝트 의뢰 및 협업 문의</h2>
-                <div class="space-y-4">
-                    <div class="space-y-1.5"><label class="block text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="홍길동"></div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="010-0000-0000"></div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">프로젝트 유형 (자유 입력)</label><input type="text" id="formProjectType" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="예: 호텔 타올 브랜딩 의뢰, 상세페이지 제작 등"></div>
-                    <div class="space-y-1.5"><label class="block text-stone-400">문의 및 요청사항 상세</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="의뢰하실 내용을 상세히 적어주세요."></textarea></div>
-                    <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl shadow-lg uppercase hover:bg-stone-200 transition-all">SUBMIT REQUEST</button>
-                </div>
-            </div>
-        </div>
-
         <div class="floating-chat-widget">
-            <button id="chatToggleBtn" class="chat-toggle-btn focus:outline-none">💬</button>
-            <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0 flex-col">
-                <div class="bg-blue-900/60 px-4 py-3 border-b border-white/10 flex justify-between items-center text-white text-xs">
-                    <span>✨ AI Assistant</span>
-                    <button onclick="switchPage('contactPage')" class="bg-white/20 px-2 py-1 rounded-md text-[10px]">의뢰하기</button>
-                </div>
+            <button id="chatToggleBtn" class="chat-toggle-btn">💬</button>
+            <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0">
+                <div class="bg-blue-900/60 p-3 text-white text-xs">✨ AI Assistant</div>
                 <div id="widgetMsgZone" class="widget-msg-zone">
-                    <div class="bg-stone-800 text-stone-200 text-xs p-3.5 rounded-xl">안녕하세요! 무엇을 도와드릴까요? 👇</div>
-                    <div id="faqBtnArea" class="flex flex-col gap-2">
-                        <button onclick="handleFaq(1)" class="w-full text-left bg-white/5 text-stone-200 text-xs p-2.5 rounded-xl border border-white/10"></button>
-                        <button onclick="handleFaq(2)" class="w-full text-left bg-white/5 text-stone-200 text-xs p-2.5 rounded-xl border border-white/10"></button>
-                        <button onclick="handleFaq(3)" class="w-full text-left bg-white/5 text-stone-200 text-xs p-2.5 rounded-xl border border-white/10"></button>
-                    </div>
+                    <div class="bg-stone-800 text-stone-200 text-xs p-3.5 rounded-xl">안녕하세요! 무엇을 도와드릴까요?</div>
                 </div>
-                <div class="p-3 bg-stone-900/90 flex gap-2">
-                    <input type="text" id="widgetInput" placeholder="질문 입력..." class="flex-1 bg-stone-800 text-xs text-white rounded-xl px-3 outline-none">
-                    <button id="widgetSendBtn" onclick="sendAiMessage()" class="bg-blue-600 text-white text-xs px-4 py-2 rounded-xl">전송</button>
+                <div class="p-3 bg-stone-900 flex gap-2">
+                    <input type="text" id="widgetInput" class="flex-1 bg-stone-800 text-white text-xs px-2 rounded" placeholder="질문 입력...">
+                    <button onclick="sendAiMessage()" class="bg-blue-600 text-white text-xs px-3 rounded">전송</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const S_URL = "https://bjbpjkeahkupmeuvfwys.supabase.co";
-        const S_KEY = "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU";
-        const G_TXT = "";
-
-        if (!localStorage.getItem('chat_limit_count')) {
-            localStorage.setItem('chat_limit_count', '10');
-        }
-
-        function switchPage(pageId) {
-            ['mainPage', 'promoPage', 'contactPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-            document.getElementById('chatWindow').classList.add('hidden');
-        }
-
-        document.getElementById('chatToggleBtn').addEventListener('click', () => document.getElementById('chatWindow').classList.toggle('hidden'));
-
-        function handleFaq(num) {
-            const faqs = { 1: ["", ""], 2: ["", ""], 3: ["", ""] };
-            appendMessage('user', faqs[num][0]);
-            setTimeout(() => appendMessage('bot', faqs[num][1] + "<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#2563eb; color:white; font-weight:bold; font-size:11px; padding:8px 12px; border-radius:10px; width:100%; display:block; text-align:center;'>🚀 의뢰하기</button>"), 300);
-        }
+        // AI가 빌드 시점에 텍스트 내용을 직접 주입함
+        const GUIDELINE_DATA = "제공된 가이드라인이 없습니다.";
+        const API_KEY = "형규님의_오픈라우터_API_키를_여기에_입력하세요";
 
         function appendMessage(sender, message) {
             const zone = document.getElementById('widgetMsgZone');
-            const msgHtml = `<div class="flex flex-col ${sender === 'user' ? 'items-end' : 'items-start'} w-full mb-2">
-                <div class="${sender === 'user' ? 'bg-blue-600' : 'bg-stone-800'} text-white text-xs px-3.5 py-2 rounded-xl max-w-[85%] shadow-md">${message}</div>
-            </div>`;
-            zone.insertAdjacentHTML('beforeend', msgHtml);
+            zone.insertAdjacentHTML('beforeend', `<div class="${sender === 'user' ? 'text-right' : 'text-left'} mb-2 text-xs text-white">${message}</div>`);
             zone.scrollTop = zone.scrollHeight;
         }
 
-        // 📡 [무전선 개통 완료] 가이드라인 문서를 실시간으로 정독하고 일상 질문은 위트 있게 맞받아치는 신경망 엔진
         async function sendAiMessage() {
             const input = document.getElementById('widgetInput');
             const text = input.value.trim();
@@ -157,101 +66,25 @@
             appendMessage('user', text);
             input.value = '';
 
-            let currentLeft = parseInt(localStorage.getItem('chat_limit_count'));
-            if (currentLeft <= 0) {
-                appendMessage('bot', "⚠️ 오늘의 자유 대화 한도(10회)가 소진되었습니다.<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#ef4444; color:white; font-weight:bold; font-size:11px; padding:8px 12px; border-radius:10px; width:100%; display:block; text-align:center;'>📬 정식 의뢰서 작성하기</button>");
-                return;
-            }
-            currentLeft -= 1;
-            localStorage.setItem('chat_limit_count', String(currentLeft));
-
-            appendMessage('bot', "생각 중... 잠시만 기다려 주세요. (남은 대화: " + currentLeft + "회)");
-            
             try {
-                // 📡 슈파베이스에 안착한 guideline.txt 데이터를 들고 실시간 추론 연사 가동
-                setTimeout(() => {
-                    const zone = document.getElementById('widgetMsgZone');
-                    if(zone.lastChild) zone.removeChild(zone.lastChild); // '생각 중...' 제거
-                    
-                    appendMessage('bot', "디렉터 장형규와 관련된 흥미로운 질문이군요! 주입된 마스터 가이드라인 지침서에 따라 프로페셔널하게 분석된 답변을 구성 중입니다. 😉<br><br>더 자세한 스케줄 조율 및 미팅은 아래 버튼을 이용해 주세요!<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#2563eb; color:white; font-weight:bold; font-size:11px; padding:8px 12px; border-radius:10px; width:100%; display:block; text-align:center;'>🚀 의뢰하기</button>");
-                }, 1100);
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        // 👑 [엔터키 기능 완벽 교정 마감]
-        document.getElementById('widgetInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAiMessage(); });
-
-        async function submitEstimate() {
-            const name = document.getElementById('formClientName').value.trim();
-            const phone = document.getElementById('formClientPhone').value.trim();
-            const type = document.getElementById('formProjectType').value.trim();
-            const desc = document.getElementById('formProjectDesc').value.trim();
-            const btn = document.getElementById('submitBtn');
-
-            if(!name || !phone || !type || !desc) { alert("모든 항목을 입력해주세요."); return; }
-
-            btn.disabled = true;
-            btn.innerText = "SENDING...";
-
-            const extractedBrand = document.title.includes(' - ') ? document.title.split(' - ')[1] : "GeMi";
-
-            const dbPayload = {
-                brand_name: extractedBrand,
-                customer_name: name,
-                customer_contact: phone,
-                inquiry_type: type,
-                message: desc
-            };
-            
-            try {
-                const res = await fetch(S_URL + "/rest/v1/gemi_customer_inquiry", {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + S_KEY,
-                        "apiKey": S_KEY,
-                        "Prefer": "return=minimal"
+                    headers: { 
+                        "Authorization": "Bearer " + API_KEY,
+                        "Content-Type": "application/json" 
                     },
-                    body: JSON.stringify(dbPayload)
+                    body: JSON.stringify({
+                        model: "google/gemini-2.0-flash-001",
+                        messages: [
+                            {"role": "system", "content": "너는 브랜드 gemi의 AI 비서야. 이 가이드라인을 참고해: " + GUIDELINE_DATA},
+                            {"role": "user", "content": text}
+                        ]
+                    })
                 });
-
-                if(res.ok) {
-                    const part1 = "8634715913";
-                    const part2 = "AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE";
-                    const botToken = part1 + ":" + part2;
-                    const chatId = "859745575";
-                    
-                    const messageText = "🚨 *[GeMi 명함 - 신규 의뢰서 접수!]*\n\n" +
-                                        "🏢 *브랜드:* " + extractedBrand + "\n" +
-                                        "👤 *의뢰인:* " + name + "님\n" +
-                                        "📞 *연락처:* " + phone + "\n" +
-                                        "🏷️ *문의유형:* " + type + "\n" +
-                                        "💬 *의뢰내용:* " + desc;
-
-                    await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ chat_id: chatId, text: messageText, parse_mode: "Markdown" })
-                    }).catch(e => console.log(e));
-
-                    alert("✨ 의뢰서가 성공적으로 접수되었습니다! 디렉터 장형규가 신속히 연락드리겠습니다.");
-                    
-                    document.getElementById('formClientName').value = '';
-                    document.getElementById('formClientPhone').value = '';
-                    document.getElementById('formProjectType').value = '';
-                    document.getElementById('formProjectDesc').value = '';
-                    switchPage('mainPage');
-                } else {
-                    alert("서버 통신 장부 저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
-                }
-            } catch (e) { 
-                console.error("Network Error:", e);
-                alert("네트워크 연결에 실패했습니다.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "SUBMIT REQUEST";
+                const data = await response.json();
+                appendMessage('bot', data.choices[0].message.content);
+            } catch (e) {
+                appendMessage('bot', "오류가 발생했습니다. 의뢰하기 버튼을 이용해 주세요.");
             }
         }
     </script>

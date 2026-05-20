@@ -21,6 +21,17 @@ def generate_webcard_code(gui_payload: dict) -> str:
     other_image_urls = gui_payload.get("other_image_urls", [])
     guideline_txt_url = gui_payload.get("guideline_txt_url", "")
     
+    # 👑 [수정] 가이드라인 텍스트를 실시간으로 읽어오기
+    guideline_text = "제공된 가이드라인이 없습니다."
+    if guideline_txt_url:
+        try:
+            res = requests.get(guideline_txt_url, timeout=5)
+            if res.status_code == 200:
+                # 줄바꿈 문자를 JS에서 안전하게 처리하도록 정제
+                guideline_text = res.text.replace('"', '\\"').replace('\n', ' ')
+        except Exception as e:
+            guideline_text = "가이드라인을 읽어오는 중 오류 발생"
+
     brand_name = user_info.get("brand_name", "GeMi")
     director_name = user_info.get("name", "장형규")
     introduction = user_info.get("introduction", "")
@@ -52,8 +63,8 @@ def generate_webcard_code(gui_payload: dict) -> str:
     rendered_code = rendered_code.replace("${DIRECTOR_NAME}", director_name)
     rendered_code = rendered_code.replace("${INTRODUCTION}", refined_intro)
     
-    # 👑 가이드라인 메모장의 실시간 주소 바인딩
-    rendered_code = rendered_code.replace("${GUIDELINE_TXT_URL}", guideline_txt_url if guideline_txt_url else "")
+    # 👑 [수정] 가이드라인 텍스트 내용을 직접 바인딩
+    rendered_code = rendered_code.replace("${GUIDELINE_TXT_URL}", guideline_text)
     
     default_img = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe"
     final_img_url = main_image_url if main_image_url else default_img
@@ -99,44 +110,5 @@ def generate_webcard_code(gui_payload: dict) -> str:
 
     return rendered_code
 
-def get_chatbot_response(gui_payload: dict, question: str) -> str:
-    user_info = gui_payload.get("user_info", {})
-    faq_info = gui_payload.get("faq_info", {})
-    brand_name = user_info.get("brand_name", "GeMi")
-    director_name = user_info.get("name", "장형규")
-    
-    guideline_url = gui_payload.get("guideline_txt_url", "")
-    fetched_guideline_text = "스튜디오 가이드라인 지침서 기록 없음."
-    
-    if guideline_url:
-        try:
-            res = requests.get(guideline_url, timeout=4)
-            if res.status_code == 200: fetched_guideline_text = res.text
-        except: pass
-
-    combined_question = f"Context: Brand:{brand_name}|Name:{director_name}\nQuestion: {question}"
-    try:
-        response = supabase_client.table(SUPABASE_TABLE).select("answer", count="exact").eq("question", combined_question).execute()
-        if response.count and response.count > 0: return response.data[0]["answer"]
-    except: pass
-
-    client_info_str = (
-        f"브랜드명: {brand_name}, 대표 디렉터명: {director_name}, 소개: {user_info.get('introduction')}\n"
-        f"📜 [가이드라인 지침 문서]:\n{fetched_guideline_text}\n"
-        f"FAQ1: {faq_info.get('faq1_q')}->{faq_info.get('faq1_a')}\n"
-        f"FAQ2: {faq_info.get('faq2_q')}->{faq_info.get('faq2_a')}"
-    )
-
-    try:
-        response = openai_client.chat.completions.create(
-            model="google/gemini-2.0-flash-001",
-            messages=[
-                {"role": "system", "content": f"너는 {brand_name}의 친절하고 센스 넘치는 AI 비서야. 제공된 가이드라인 문서를 철저히 마스터하고 고객에게 답변해줘.\n\n--- 가이드라인 지침 문서 ---\n{client_info_str}\n\n🎯 [대화 규칙]\n1. 비즈니스 비용, 단가, 기간 등 전문적인 내용은 문서 가이드라인 팩트에만 100% 근거하여 오차 없이 대답하세요.\n2. 문서에 없는 사적인 질문이나 장난은 대표님의 스타일에 걸맞게 은근히 위트있고 세련되게 농담으로 받아치며 대응하세요.\n3. 문장 맨 마지막 줄에 다음 콤팩트 문구만 깔끔하게 추가하세요.\n<br><br><button onclick='switchPage(\"contactPage\")' style='background-color:#2563eb; color:white; font-weight:bold; font-size:11px; padding:8px 12px; border-radius:10px; width:100%; display:block; text-align:center;'>🚀 의뢰하기</button>"} ,
-                {"role": "user", "content": question}
-            ]
-        )
-        answer = response.choices[0].message.content
-        try: supabase_client.table(SUPABASE_TABLE).insert({"question": combined_question, "answer": answer}).execute()
-        except: pass
-        return answer
-    except Exception as e: return "현재 일시적인 통신 혼선이 있으니 대화창 우측 상단 [의뢰하기] 버튼을 통해 접수해 주시면 대단히 감사하겠습니다."
+# [참고] get_chatbot_response는 이제 배포된 HTML에서 사용되지 않으므로 
+# 필요시 유지하시되, 웹 명함의 챗봇 작동에는 영향을 주지 않게 되었습니다.
