@@ -1,15 +1,16 @@
+# api/chat.py
 import json
 import os
 import urllib.request
 from supabase import create_client
 
+# 설정 (변수명 유지)
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def handler(request, response):
-    # (내부 로직은 그대로 유지하되, response 객체를 활용하는 방식)
-    # ... 코드 내용 동일 ...
+# Vercel이 호출할 핵심 함수
+def handler(request):
     # 1. 환경 변수 확인
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
