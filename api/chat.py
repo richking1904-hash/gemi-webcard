@@ -2,6 +2,7 @@ import json
 import os
 import urllib.request
 
+# Vercel이 호출할 핵심 함수 (handler)
 def handler(request):
     try:
         # 1. 요청 처리
@@ -14,7 +15,7 @@ def handler(request):
         if not os.environ.get("SUPABASE_URL") or not os.environ.get("OPENROUTER_API_KEY"):
             return send_json(request, {"reply": "환경 변수 오류"}, 500)
 
-        # 3. 데이터 로직 (Supabase REST)
+        # 3. Supabase 데이터 로직
         headers = {
             "apikey": os.environ.get("SUPABASE_KEY"),
             "Authorization": f"Bearer {os.environ.get('SUPABASE_KEY')}",
@@ -58,7 +59,7 @@ def handler(request):
             with urllib.request.urlopen(ai_req) as ai_res:
                 reply = json.loads(ai_res.read().decode('utf-8'))["choices"][0]["message"]["content"]
             
-            # 관련 없는 질문 시 카운트 증가
+            # 카운트 증가
             if "관련 없는 질문" in reply:
                 new_count = count + 1
                 u_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache"
