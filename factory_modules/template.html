@@ -11,35 +11,30 @@
         .card-image-wrapper { width: 100%; height: 360px; position: relative; overflow: hidden; background-color: #111; flex-shrink: 0; }
         .card-content-wrapper { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, #1a1c1e 0%, #141517 100%); }
         .floating-chat-widget { position: absolute; bottom: 20px; right: 20px; z-index: 100; }
-        .chat-toggle-btn { width: 50px; height: 50px; background-color: #ffffff; color: #0c0d0e; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid #3b82f6; position: relative; }
+        .chat-toggle-btn { width: 50px; height: 50px; background-color: #ffffff; color: #0c0d0e; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid #3b82f6; cursor: pointer; }
         .chat-window { width: 310px; height: 400px; background: #191b1d; border: 2px solid #3b82f6; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; }
         .widget-msg-zone { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+        .sub-page-content { flex: 1; overflow-y: auto; padding: 20px; }
         .smart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body class="antialiased font-sans text-stone-200">
     <div class="centered-card">
-        <div id="mainPage" class="w-full h-full flex flex-col justify-between">
+        <div id="mainPage" class="w-full h-full flex flex-col">
             <div class="card-image-wrapper">
                 <img src="${main_image_url}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#1a1c1e] via-transparent to-transparent opacity-90"></div>
             </div>
             <div class="card-content-wrapper">
-                <div class="text-center pt-1">
+                <div class="text-center">
                     <h1 class="text-2xl font-bold text-white mb-1">${user_name}</h1>
-                    <p class="text-[10px] text-stone-400 font-semibold uppercase tracking-widest mb-2.5">${brand_name}</p>
-                    <p class="text-xs text-stone-300 leading-relaxed max-w-[88%] mx-auto">${INTRODUCTION}</p>
+                    <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-2.5">${brand_name}</p>
+                    <p class="text-xs text-stone-300 leading-relaxed">${INTRODUCTION}</p>
                 </div>
-                <div class="space-y-2.5 w-full pb-1">
-                    <div class="grid grid-cols-2 gap-2">
-                        <a href="${SNS1_URL}" target="_blank" style="${SNS1_DISPLAY}" class="bg-stone-800 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50">${SNS1_TYPE}</a>
-                        <a href="${SNS2_URL}" target="_blank" style="${SNS2_DISPLAY}" class="bg-stone-800 text-stone-200 text-center font-medium text-xs py-2.5 rounded-xl border border-stone-700/50">${SNS2_TYPE}</a>
-                    </div>
-                    <div class="smart-grid">
-                        <button onclick="switchPage('promoPage')" class="bg-stone-800 text-stone-200 font-bold text-[11px] py-3 rounded-xl border border-stone-700/50">PORTFOLIO</button>
-                        <button onclick="switchPage('contactPage')" class="bg-white text-stone-950 font-bold text-[11px] py-3 rounded-xl">GET IN TOUCH</button>
-                    </div>
+                <div class="smart-grid">
+                    <button onclick="switchPage('promoPage')" class="bg-stone-800 py-3 rounded-xl font-bold text-[11px]">PORTFOLIO</button>
+                    <button onclick="switchPage('contactPage')" class="bg-white text-stone-950 py-3 rounded-xl font-bold text-[11px]">GET IN TOUCH</button>
                 </div>
             </div>
         </div>
@@ -49,8 +44,11 @@
                 <span class="text-sm font-bold text-white">PORTFOLIO</span>
                 <button onclick="switchPage('mainPage')" class="text-xs text-stone-400">← BACK</button>
             </div>
-            <div class="flex-1 overflow-y-auto p-5">
-                <div class="grid grid-cols-2 gap-3"><img src="${SUB_IMAGE_URL_1}" class="rounded-xl"><img src="${SUB_IMAGE_URL_2}" class="rounded-xl"></div>
+            <div class="sub-page-content">
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="space-y-3"><img src="${SUB_IMAGE_URL_1}" class="rounded-xl shadow-md"><img src="${SUB_IMAGE_URL_3}" class="rounded-xl shadow-md"></div>
+                    <div class="space-y-3 pt-6"><img src="${SUB_IMAGE_URL_2}" class="rounded-xl shadow-md"><img src="${SUB_IMAGE_URL_4}" class="rounded-xl shadow-md"></div>
+                </div>
             </div>
         </div>
 
@@ -59,18 +57,18 @@
                 <span class="text-sm font-bold text-white">GET IN TOUCH</span>
                 <button onclick="switchPage('mainPage')" class="text-xs text-stone-400">← BACK</button>
             </div>
-            <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
-                <input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="이름">
-                <input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="연락처">
-                <textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white" placeholder="문의 내용"></textarea>
-                <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl">SUBMIT</button>
+            <div class="sub-page-content space-y-4 text-xs">
+                <div class="space-y-1.5"><label class="text-stone-400">성함 / 기업명</label><input type="text" id="formClientName" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
+                <div class="space-y-1.5"><label class="text-stone-400">연락처</label><input type="text" id="formClientPhone" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></div>
+                <div class="space-y-1.5"><label class="text-stone-400">문의 상세내용</label><textarea id="formProjectDesc" rows="4" class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white"></textarea></div>
+                <button onclick="submitEstimate()" id="submitBtn" class="w-full bg-white text-stone-950 font-bold py-3.5 rounded-xl uppercase">SUBMIT REQUEST</button>
             </div>
         </div>
 
         <div class="floating-chat-widget">
             <button id="chatToggleBtn" class="chat-toggle-btn">💬</button>
             <div id="chatWindow" class="chat-window hidden absolute bottom-16 right-0">
-                <div id="widgetMsgZone" class="widget-msg-zone"><div class="bg-stone-800 text-stone-200 text-xs p-3 rounded-xl">안녕하세요!</div></div>
+                <div id="widgetMsgZone" class="widget-msg-zone"><div class="bg-stone-800 p-3 rounded-xl text-xs">안녕하세요!</div></div>
                 <div class="p-3 bg-stone-900 flex gap-2">
                     <input type="text" id="widgetInput" class="flex-1 bg-stone-800 text-white text-xs px-2 rounded">
                     <button onclick="sendAiMessage()" class="bg-blue-600 text-white text-xs px-3 rounded">전송</button>
@@ -81,42 +79,48 @@
 
     <script>
         const encodedData = "${GUIDELINE_TXT_URL}";
-        const G_TXT = (encodedData === "error") ? "지침 없음" : atob(encodedData);
+        const G_TXT = (encodedData === "error") ? "정보 없음" : atob(encodedData);
         const API_KEY = "OPENROUTER_API_KEY_HERE";
 
         function switchPage(p) {
             ['mainPage', 'promoPage', 'contactPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById(p).classList.remove('hidden');
         }
+        
+        document.getElementById('chatToggleBtn').addEventListener('click', () => document.getElementById('chatWindow').classList.toggle('hidden'));
 
         async function submitEstimate() {
             const btn = document.getElementById('submitBtn');
             const data = {
                 name: document.getElementById('formClientName').value,
                 phone: document.getElementById('formClientPhone').value,
-                message: document.getElementById('formProjectDesc').value
+                desc: document.getElementById('formProjectDesc').value
             };
             btn.innerText = "SENDING...";
-            
-            // 슈파베이스 저장
+            // 슈파베이스 저장 및 텔레그램 연동 로직
             await fetch("https://bjbpjkeahkupmeuvfwys.supabase.co/rest/v1/gemi_customer_inquiry", {
                 method: "POST",
                 headers: { "apikey": "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Authorization": "Bearer sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Content-Type": "application/json" },
-                body: JSON.stringify({ customer_name: data.name, customer_contact: data.phone, message: data.message })
+                body: JSON.stringify({ customer_name: data.name, customer_contact: data.phone, message: data.desc })
             });
-
-            // 텔레그램 알림
             await fetch("https://api.telegram.org/bot8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE/sendMessage", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: "859745575", text: `신규 의뢰: ${data.name}\n${data.phone}\n${data.message}` })
+                body: JSON.stringify({ chat_id: "859745575", text: `신규 의뢰: ${data.name}\n${data.phone}\n${data.desc}` })
             });
-
-            alert("접수되었습니다!");
-            btn.innerText = "SUBMIT";
+            alert("접수 완료!");
+            btn.innerText = "SUBMIT REQUEST";
         }
 
-        // sendAiMessage 등 나머지 기존 함수들은 동일하게 유지...
+        async function sendAiMessage() {
+            const input = document.getElementById('widgetInput');
+            const text = input.value.trim();
+            if(!text) return;
+            // 챗봇 메시지 추가 로직...
+            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="text-right text-xs bg-blue-600 p-2 rounded-xl text-white">${text}</div>`);
+            input.value = '';
+            // API 호출 로직...
+        }
     </script>
 </body>
 </html>
