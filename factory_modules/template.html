@@ -112,6 +112,7 @@
         async function sendAiMessage() {
             const input = document.getElementById('widgetInput');
             const text = input.value.trim();
+            console.log("요청 시작:", text);
             if(!text) return;
             document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-end mb-2"><div class="bg-[#C5A059] p-3 rounded-2xl text-[11px] text-black">${text}</div></div>`);
             input.value = '';
@@ -121,11 +122,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text + "\n\n[참고 가이드라인]: " + G_TXT })
                 });
+                console.log("통신 상태:", response.status);
                 const data = await response.json();
+                console.log("서버 응답:", data);
                 document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-start mb-2"><div class="bg-[#333] p-3 rounded-2xl text-[11px] text-white">${data.reply || data.error}</div></div>`);
                 document.getElementById('widgetMsgZone').scrollTop = document.getElementById('widgetMsgZone').scrollHeight;
             } catch(e) {
-                document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="text-[10px] text-red-500">통신 실패</div>`);
+                console.error("통신 에러:", e);
+                document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="text-[10px] text-red-500">통신 실패: 에러 발생</div>`);
             }
         }
     </script>
