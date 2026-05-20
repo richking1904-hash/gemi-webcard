@@ -6,6 +6,12 @@ from http.server import BaseHTTPRequestHandler
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
+            # 0. 환경 변수 사전 체크 (디버깅용)
+            required_envs = ["SUPABASE_URL", "SUPABASE_KEY", "OPENROUTER_API_KEY"]
+            for env in required_envs:
+                if not os.environ.get(env):
+                    raise Exception(f"환경 변수 설정 오류: {env}가 없습니다.")
+
             content_length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(content_length))
             user_message = body.get("message", "")
@@ -18,7 +24,7 @@ class handler(BaseHTTPRequestHandler):
                 "Content-Type": "application/json"
             }
             
-            # 가이드라인 URL 가져오기 (데이터가 없어도 에러 안 나게 안전 처리)
+            # 가이드라인 URL 가져오기
             g_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_clients?client_id=eq.{client_id}&select=guideline_txt_url"
             res_g = requests.get(g_url, headers=headers).json()
             guideline_text = ""
@@ -55,7 +61,6 @@ class handler(BaseHTTPRequestHandler):
                 if "관련 없는 질문" in reply:
                     new_count = count + 1
                     u_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache"
-                    # upsert 대신 명확한 post 사용
                     requests.post(u_url, headers=headers, json={"client_id": client_id, "irrelevant_count": new_count})
                     reply += f" (제한: {new_count}/10)"
 
