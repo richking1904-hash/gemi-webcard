@@ -1,6 +1,7 @@
 # api/chat.py
 import json
 import os
+print("DEBUG: API가 호출되었습니다!")
 import urllib.request
 from supabase import create_client
 
