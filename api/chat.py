@@ -6,18 +6,20 @@ from http.server import BaseHTTPRequestHandler
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
-            # 0. 환경 변수 사전 체크 (디버깅용)
+            # 1. 요청 데이터 읽기
+            content_length = int(self.headers.get('Content-Length', 0))
+            body_bytes = self.rfile.read(content_length)
+            body = json.loads(body_bytes.decode('utf-8'))
+            user_message = body.get("message", "")
+            client_id = body.get("client_id", "default_user")
+
+            # 2. 환경 변수 체크
             required_envs = ["SUPABASE_URL", "SUPABASE_KEY", "OPENROUTER_API_KEY"]
             for env in required_envs:
                 if not os.environ.get(env):
                     raise Exception(f"환경 변수 설정 오류: {env}가 없습니다.")
 
-            content_length = int(self.headers.get('Content-Length', 0))
-            body = json.loads(self.rfile.read(content_length))
-            user_message = body.get("message", "")
-            client_id = body.get("client_id", "default_user")
-
-            # 1. Supabase 접속 헤더
+            # 3. Supabase 접속 헤더
             headers = {
                 "apikey": os.environ.get("SUPABASE_KEY"),
                 "Authorization": f"Bearer {os.environ.get('SUPABASE_KEY')}",
@@ -39,11 +41,10 @@ class handler(BaseHTTPRequestHandler):
             res_c = requests.get(c_url, headers=headers).json()
             count = res_c[0]["irrelevant_count"] if isinstance(res_c, list) and len(res_c) > 0 else 0
             
-            # 2. 로직 처리
+            # 4. 로직 처리
             if count >= 10:
                 reply = "어이쿠, 10번을 다 쓰셨네요! 이제는 업무 문의만 부탁드려요. 😅"
             else:
-                # 3. AI 호출
                 payload = {
                     "model": "google/gemini-2.0-flash-001",
                     "messages": [
@@ -57,7 +58,7 @@ class handler(BaseHTTPRequestHandler):
                 else:
                     reply = ai_res.json()["choices"][0]["message"]["content"]
 
-                # 4. 관련 없는 질문 카운트 증가
+                # 5. 관련 없는 질문 카운트 증가
                 if "관련 없는 질문" in reply:
                     new_count = count + 1
                     u_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache"
@@ -67,7 +68,7 @@ class handler(BaseHTTPRequestHandler):
         except Exception as e:
             reply = f"시스템 오류: {str(e)}"
 
-        # 결과 응답 (무조건 JSON 형태)
+        # 6. 결과 응답 (무조건 JSON 형태 보장)
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
