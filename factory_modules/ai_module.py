@@ -73,12 +73,23 @@ def generate_webcard_code(gui_payload: dict) -> str:
         img_url = other_image_urls[i] if i < len(other_image_urls) else default_img
         rendered_code = rendered_code.replace(f"${{SUB_IMAGE_URL_{i+1}}}", img_url)
 
-    # 연락처 및 기타 정보
+    # 연락처 및 기타 정보 (바인딩 로직 강화)
     rendered_code = rendered_code.replace("${PHONE}", contact_info.get("phone", ""))
     rendered_code = rendered_code.replace("${EMAIL}", contact_info.get("email", ""))
-    rendered_code = rendered_code.replace("${SNS1_TYPE}", contact_info.get("sns1_type", "SNS"))
-    rendered_code = rendered_code.replace("${SNS1_URL}", contact_info.get("sns1_url", "#"))
-    rendered_code = rendered_code.replace("${SNS2_TYPE}", contact_info.get("sns2_type", "SNS"))
-    rendered_code = rendered_code.replace("${SNS2_URL}", contact_info.get("sns2_url", "#"))
+    
+    # SNS 정보 처리
+    sns1_type = contact_info.get("sns1_type", "SNS")
+    sns1_url = contact_info.get("sns1_url", "#")
+    sns2_type = contact_info.get("sns2_type", "SNS")
+    sns2_url = contact_info.get("sns2_url", "#")
+    
+    rendered_code = rendered_code.replace("${SNS1_TYPE}", sns1_type)
+    rendered_code = rendered_code.replace("${SNS1_URL}", sns1_url)
+    rendered_code = rendered_code.replace("${SNS2_TYPE}", sns2_type)
+    rendered_code = rendered_code.replace("${SNS2_URL}", sns2_url)
+    
+    # SNS 표시 여부 설정 (URL이 있으면 flex, 없으면 none)
+    rendered_code = rendered_code.replace("${SNS1_DISPLAY}", "display: flex;" if sns1_url != "#" else "display: none !important;")
+    rendered_code = rendered_code.replace("${SNS2_DISPLAY}", "display: flex;" if sns2_url != "#" else "display: none !important;")
 
     return rendered_code

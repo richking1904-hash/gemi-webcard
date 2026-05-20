@@ -32,7 +32,7 @@
         <div id="mainPage" class="w-full h-full flex flex-col">
             <div class="card-image-wrapper">
                 <img src="${main_image_url}" class="w-full h-full object-cover grayscale-[20%]">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#0c0d0e] via-transparent to-transparent opacity-60"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0c0d0e] via-transparent to-transparent opacity-80"></div>
             </div>
             <div class="card-content-wrapper">
                 <div class="text-center">
@@ -41,7 +41,18 @@
                     <div class="w-8 h-[1px] bg-[#C5A059] mx-auto mb-4"></div>
                     <p class="text-xs text-stone-300 leading-relaxed max-w-[90%] mx-auto font-light">${INTRODUCTION}</p>
                 </div>
-                <div class="smart-grid mt-6">
+                
+                <div class="w-full flex items-center justify-between px-4 py-3 my-4 border-y border-white/5 bg-white/[0.02]">
+                    <a href="tel:${PHONE}" class="text-[10px] font-bold text-stone-300">📞 ${PHONE}</a>
+                    <span class="text-[10px] text-stone-500 font-mono">${EMAIL}</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2" style="${SNS1_DISPLAY}">
+                    <a href="${SNS1_URL}" target="_blank" class="bg-stone-800 text-stone-200 text-center font-bold text-[10px] py-2.5 rounded-xl border border-white/5 uppercase">${SNS1_TYPE}</a>
+                    <a href="${SNS2_URL}" target="_blank" style="${SNS2_DISPLAY}" class="bg-stone-800 text-stone-200 text-center font-bold text-[10px] py-2.5 rounded-xl border border-white/5 uppercase">${SNS2_TYPE}</a>
+                </div>
+
+                <div class="smart-grid mt-4">
                     <button onclick="switchPage('promoPage')" class="bg-stone-800 text-stone-200 font-bold text-[11px] py-4 rounded-2xl border border-white/5 tracking-widest uppercase">Portfolio</button>
                     <button onclick="switchPage('contactPage')" class="gold-btn text-[11px] py-4 tracking-widest uppercase shadow-xl">Contact</button>
                 </div>
@@ -54,16 +65,9 @@
                 <button onclick="switchPage('mainPage')" class="text-[10px] text-stone-500 hover:text-white uppercase tracking-wider">Close</button>
             </div>
             <div class="sub-page-content">
-                <p class="text-[10px] text-stone-500 mb-6 tracking-widest leading-loose uppercase">GeMi Design Studio - Portfolio</p>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-4">
-                        <img src="${SUB_IMAGE_URL_1}" class="rounded-2xl border border-white/5 shadow-2xl">
-                        <img src="${SUB_IMAGE_URL_3}" class="rounded-2xl border border-white/5 shadow-2xl">
-                    </div>
-                    <div class="space-y-4 pt-8">
-                        <img src="${SUB_IMAGE_URL_2}" class="rounded-2xl border border-white/5 shadow-2xl">
-                        <img src="${SUB_IMAGE_URL_4}" class="rounded-2xl border border-white/5 shadow-2xl">
-                    </div>
+                    <div class="space-y-4"><img src="${SUB_IMAGE_URL_1}" class="rounded-2xl border border-white/5"><img src="${SUB_IMAGE_URL_3}" class="rounded-2xl border border-white/5"></div>
+                    <div class="space-y-4 pt-8"><img src="${SUB_IMAGE_URL_2}" class="rounded-2xl border border-white/5"><img src="${SUB_IMAGE_URL_4}" class="rounded-2xl border border-white/5"></div>
                 </div>
             </div>
         </div>
@@ -75,11 +79,11 @@
             </div>
             <div class="sub-page-content space-y-5">
                 <div class="space-y-4 pt-2">
-                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Name / Brand</label><input type="text" id="formClientName" placeholder="성함 또는 기업명을 입력하세요"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Contact</label><input type="text" id="formClientPhone" placeholder="010-0000-0000 (연락처)"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Project Type</label><input type="text" id="formProjectType" placeholder="작업 유형 (예: 브랜딩, 상세페이지)"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Budget Range</label><input type="text" id="formBudget" placeholder="예산 범위 (예: 300만원)"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Details</label><textarea id="formProjectDesc" rows="3" placeholder="프로젝트 목표 및 요청사항을 상세히 적어주세요."></textarea></div>
+                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Name / Brand</label><input type="text" id="formClientName" placeholder="홍길동 (성함 또는 기업명)"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Contact</label><input type="text" id="formClientPhone" placeholder="010-0000-0000"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Project Type</label><input type="text" id="formProjectType" placeholder="예: 브랜딩, 상세페이지 제작"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Budget Range</label><input type="text" id="formBudget" placeholder="예: 300만원"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] text-stone-400 uppercase tracking-widest">Details</label><textarea id="formProjectDesc" rows="3" placeholder="프로젝트 목표 및 요청사항을 기술해주세요."></textarea></div>
                     <button onclick="submitEstimate()" id="submitBtn" class="gold-btn mt-4">SUBMIT BRIEF</button>
                 </div>
             </div>
@@ -97,47 +101,22 @@
             </div>
         </div>
     </div>
-
     <script>
         const encodedData = "${GUIDELINE_TXT_URL}";
         let G_TXT = (encodedData === "error") ? "" : atob(encodedData);
-        function switchPage(id) {
-            ['mainPage', 'promoPage', 'contactPage'].forEach(el => document.getElementById(el).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
+        function switchPage(id) { ['mainPage', 'promoPage', 'contactPage'].forEach(el => document.getElementById(el).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
         document.getElementById('chatToggleBtn').addEventListener('click', () => document.getElementById('chatWindow').classList.toggle('hidden'));
-
         async function submitEstimate() {
             const btn = document.getElementById('submitBtn');
-            const data = {
-                name: document.getElementById('formClientName').value,
-                phone: document.getElementById('formClientPhone').value,
-                type: document.getElementById('formProjectType').value,
-                budget: document.getElementById('formBudget').value,
-                desc: document.getElementById('formProjectDesc').value
-            };
+            const data = { name: document.getElementById('formClientName').value, phone: document.getElementById('formClientPhone').value, type: document.getElementById('formProjectType').value, budget: document.getElementById('formBudget').value, desc: document.getElementById('formProjectDesc').value };
             btn.innerText = "SENDING...";
-            await fetch("https://bjbpjkeahkupmeuvfwys.supabase.co/rest/v1/gemi_customer_inquiry", {
-                method: "POST",
-                headers: { "apikey": "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Authorization": "Bearer sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Content-Type": "application/json" },
-                body: JSON.stringify({ customer_name: data.name, customer_contact: data.phone, inquiry_type: data.type, message: `[예산: ${data.budget}] ${data.desc}` })
-            });
-            await fetch("https://api.telegram.org/bot8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE/sendMessage", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: "859745575", text: `신규 의뢰: ${data.name}\n${data.phone}\n타입: ${data.type}\n예산: ${data.budget}\n내용: ${data.desc}`, parse_mode: "Markdown" })
-            });
-            alert("전송되었습니다!");
-            btn.innerText = "SUBMIT BRIEF";
-            switchPage('mainPage');
+            await fetch("https://bjbpjkeahkupmeuvfwys.supabase.co/rest/v1/gemi_customer_inquiry", { method: "POST", headers: { "apikey": "sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Authorization": "Bearer sb_publishable_yHPGOhKSEPAehg-sin-7IQ_nHtfYBWU", "Content-Type": "application/json" }, body: JSON.stringify({ customer_name: data.name, customer_contact: data.phone, inquiry_type: data.type, message: `[예산: ${data.budget}] ${data.desc}` }) });
+            await fetch("https://api.telegram.org/bot8634715913:AAFViFIFDLaj-WsSvvuGUXmK1KMvjWOjNyE/sendMessage", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "859745575", text: `신규 의뢰: ${data.name}\n${data.phone}\n타입: ${data.type}\n예산: ${data.budget}\n내용: ${data.desc}`, parse_mode: "Markdown" }) });
+            alert("전송되었습니다!"); btn.innerText = "SUBMIT BRIEF"; switchPage('mainPage');
         }
-
         async function sendAiMessage() {
-            const input = document.getElementById('widgetInput');
-            const text = input.value.trim();
-            if(!text) return;
-            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-end mb-2"><div class="bg-[#C5A059] p-3 rounded-2xl text-[11px] text-black">${text}</div></div>`);
-            input.value = '';
+            const input = document.getElementById('widgetInput'); const text = input.value.trim(); if(!text) return;
+            document.getElementById('widgetMsgZone').insertAdjacentHTML('beforeend', `<div class="flex flex-col items-end mb-2"><div class="bg-[#C5A059] p-3 rounded-2xl text-[11px] text-black">${text}</div></div>`); input.value = '';
         }
     </script>
 </body>
