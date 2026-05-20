@@ -1,7 +1,7 @@
 import json
 import os
-import requests
-from http.server import BaseHTTPRequestHandler
+import urllib.request
+import urllib.error
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -28,23 +28,30 @@ class handler(BaseHTTPRequestHandler):
             
             # 가이드라인 URL 가져오기
             g_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_clients?client_id=eq.{client_id}&select=guideline_txt_url"
-            res_g = requests.get(g_url, headers=headers).json()
+            req_g = urllib.request.Request(g_url, headers=headers)
+            with urllib.request.urlopen(req_g) as res:
+                res_g = json.loads(res.read().decode('utf-8'))
+            
             guideline_text = ""
             if isinstance(res_g, list) and len(res_g) > 0 and res_g[0].get("guideline_txt_url"):
                 try: 
-                    guideline_text = requests.get(res_g[0]["guideline_txt_url"], timeout=5).text
+                    with urllib.request.urlopen(res_g[0]["guideline_txt_url"], timeout=5) as res_txt:
+                        guideline_text = res_txt.read().decode('utf-8')
                 except: 
                     guideline_text = "가이드라인 파일을 로드할 수 없습니다."
 
             # 질문 횟수 가져오기
             c_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache?client_id=eq.{client_id}&select=irrelevant_count"
-            res_c = requests.get(c_url, headers=headers).json()
+            req_c = urllib.request.Request(c_url, headers=headers)
+            with urllib.request.urlopen(req_c) as res:
+                res_c = json.loads(res.read().decode('utf-8'))
             count = res_c[0]["irrelevant_count"] if isinstance(res_c, list) and len(res_c) > 0 else 0
             
             # 4. 로직 처리
             if count >= 10:
                 reply = "어이쿠, 10번을 다 쓰셨네요! 이제는 업무 문의만 부탁드려요. 😅"
             else:
+                # 3. AI 호출 (urllib 사용)
                 payload = {
                     "model": "google/gemini-2.0-flash-001",
                     "messages": [
@@ -52,17 +59,20 @@ class handler(BaseHTTPRequestHandler):
                         {"role": "user", "content": user_message}
                     ]
                 }
-                ai_res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers={"Authorization": f"Bearer {os.environ.get('OPENROUTER_API_KEY')}"}, json=payload)
-                if ai_res.status_code != 200:
-                    reply = f"AI 응답 오류: {ai_res.text}"
-                else:
-                    reply = ai_res.json()["choices"][0]["message"]["content"]
+                ai_req = urllib.request.Request(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    data=json.dumps(payload).encode('utf-8'),
+                    headers={"Authorization": f"Bearer {os.environ.get('OPENROUTER_API_KEY')}", "Content-Type": "application/json"}
+                )
+                with urllib.request.urlopen(ai_req) as ai_res:
+                    reply = json.loads(ai_res.read().decode('utf-8'))["choices"][0]["message"]["content"]
 
                 # 5. 관련 없는 질문 카운트 증가
                 if "관련 없는 질문" in reply:
                     new_count = count + 1
                     u_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache"
-                    requests.post(u_url, headers=headers, json={"client_id": client_id, "irrelevant_count": new_count})
+                    u_req = urllib.request.Request(u_url, data=json.dumps({"client_id": client_id, "irrelevant_count": new_count}).encode('utf-8'), headers={**headers, "Prefer": "resolution=merge-duplicates"})
+                    urllib.request.urlopen(u_req)
                     reply += f" (제한: {new_count}/10)"
 
         except Exception as e:
