@@ -41,11 +41,14 @@ def handler(request):
         
         # 4. AI 호출
         if count >= 10:
-            reply = "문의 횟수 초과입니다."
+            reply = "어이쿠, 10번을 다 쓰셨네요! 이제는 업무 문의만 부탁드려요. 😅"
         else:
             payload = {
                 "model": "google/gemini-2.0-flash-001",
-                "messages": [{"role": "user", "content": f"가이드: {guideline_text}\n질문: {user_message}"}]
+                "messages": [
+                    {"role": "system", "content": f"당신은 GeMi 어시스턴트입니다. [가이드라인]: {guideline_text}\n\n질문이 업무와 무관하면 위트 있게 거절하고 '관련 없는 질문'이라는 표현을 꼭 써주세요."},
+                    {"role": "user", "content": user_message}
+                ]
             }
             ai_req = urllib.request.Request(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -54,6 +57,15 @@ def handler(request):
             )
             with urllib.request.urlopen(ai_req) as ai_res:
                 reply = json.loads(ai_res.read().decode('utf-8'))["choices"][0]["message"]["content"]
+            
+            # 관련 없는 질문 시 카운트 증가
+            if "관련 없는 질문" in reply:
+                new_count = count + 1
+                u_url = f"{os.environ.get('SUPABASE_URL')}/rest/v1/gemi_chat_cache"
+                u_data = json.dumps({"client_id": client_id, "irrelevant_count": new_count}).encode('utf-8')
+                u_req = urllib.request.Request(u_url, data=u_data, headers={**headers, "Prefer": "resolution=merge-duplicates"})
+                urllib.request.urlopen(u_req)
+                reply += f" (제한: {new_count}/10)"
                 
         return send_json(request, {"reply": reply})
 
