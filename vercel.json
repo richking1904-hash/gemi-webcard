@@ -1,10 +1,5 @@
 {
-  "functions": {
-    "api/chat.py": {
-      "runtime": "vercel-python@4.0.0"
-    }
-  },
-  "builds": [
-    { "src": "api/chat.py", "use": "@vercel/python" }
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat.py" }
   ]
 }
