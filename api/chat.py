@@ -1,7 +1,12 @@
-import json
 import os
+import sys
+# 현재 경로를 시스템 경로에 추가 (라이브러리 로딩 문제 방지)
+sys.path.append(os.getcwd())
+
+import json
 from http.server import BaseHTTPRequestHandler
 from openai import OpenAI
+# ... (이후 기존 코드 유지)
 
 # OpenRouter 클라이언트 설정
 client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ.get("OPENROUTER_API_KEY"))
