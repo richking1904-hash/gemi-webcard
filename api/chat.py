@@ -2,7 +2,7 @@ import json
 import os
 import urllib.request
 
-# Vercel이 호출할 핵심 함수 (handler)
+# Vercel이 이 파일을 파이썬 서버리스 함수로 인식하게 하는 필수 구조
 def handler(request):
     try:
         # 1. 요청 처리
