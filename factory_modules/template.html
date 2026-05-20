@@ -49,8 +49,8 @@
     </div>
 
     <script>
-        // AI가 빌드 시점에 텍스트 내용을 직접 주입함
-        const GUIDELINE_DATA = "${GUIDELINE_TXT_URL}";
+        // 👑 [수정] 따옴표를 제거하여 문법 에러 해결
+        const GUIDELINE_DATA = ${GUIDELINE_TXT_URL}; 
         const API_KEY = "형규님의_오픈라우터_API_키를_여기에_입력하세요";
 
         function appendMessage(sender, message) {
@@ -87,6 +87,9 @@
                 appendMessage('bot', "오류가 발생했습니다. 의뢰하기 버튼을 이용해 주세요.");
             }
         }
+        
+        document.getElementById('chatToggleBtn').addEventListener('click', () => document.getElementById('chatWindow').classList.toggle('hidden'));
+        function switchPage(page) { alert("페이지 전환 기능입니다."); }
     </script>
 </body>
 </html>
